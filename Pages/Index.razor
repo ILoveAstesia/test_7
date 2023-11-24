@@ -2,13 +2,15 @@
 @using Data
 @inject WeatherForecastService ForecastService
 @using test_7.Component
+@using test_7.Model
 
+<!-- #region -->
 @* <ListComponent Name="FoodList!" Data="" ItemType="">
 
 </ListComponent> *@
 
 
-<ListComponent Name="Weather List" Data="forecasts" ItemType="WeatherForecast">
+@* <ListComponent Name="Weather List" Data="forecasts" ItemType="WeatherForecast">
     <HeadTemplet>
         <th>Date</th>
         <th>Temp. (C)</th>
@@ -27,11 +29,13 @@
         @context
         @forecasts!.Count()
     </ContentTemplet>
-</ListComponent>
+</ListComponent> 
 
 <RenderTest />
+<PasswordEntry @bind-inerpassword=displayPass />
+*@
 
-<!-- #region -->
+
 
 @* 
 <input type="text" @bind=Context @oninput=input />
@@ -43,23 +47,72 @@
         Context=e.Value!.ToString()+",";
     }
 *@
+
+@* @if(DataList is null){
+    <p>loading...</p>
+}else{
+@DataList;
+} *@
 <!-- #endregion -->
 
-<PasswordEntry @bind-inerpassword=displayPass />
+<input type="number" @bind=id>
+<br>
+<button @onclick=GetDataList class="primary" >GetData</button>
+<br>
+<button @onclick=GetAllDept class="secondary">RefreshDept</button>
 
 
+<ListComponent Name="Department" ItemType="Department" Data="DataList">
+<HeadTemplet>
+    <th>Id</th>
+    <th>Name</th>
+</HeadTemplet>
+<RowTemplet>
+    <td>@context.Id</td>
+    <td>@context.Name</td>
+</RowTemplet>
+<ContentTemplet>
+
+    <p>TotalNumber:@DataList!.Count();</p>
+
+</ContentTemplet>
+</ListComponent>
+
+@inject HttpClient HttpClient;
+@inject NavigationManager NavigationManager;
 @code {
     String? displayPass="未输入";
-
-    System.Data.DataSet? getDatas;
-
-    void getData(){
-        //getDatas==
+    int id ;
+    List<Department>? DataList;
+    async void GetDataList(){
+        DataList=await HttpClient.GetFromJsonAsync<List<Department>>(NavigationManager.BaseUri + "Departments"+"/"+id);//+"?id="
+        StateHasChanged();
     }
 
-    private WeatherForecast[]? forecasts;
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        GetAllDept();
+        return  base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async void GetAllDept(){
+        DataList=await HttpClient.GetFromJsonAsync<List<Department>>(NavigationManager.BaseUri + "Departments/");
+        StateHasChanged();
+    }
+
+    //persons = await HttpClient.GetFromJsonAsync<List<Person>>(NavigationManager.BaseUri + "persons"+"/"+"?id="+id);
+    //await HttpClient.PostAsJsonAsync($"{NavigationManager.BaseUri}persons", person);
+  
+    @* 
+    Department[]? DataArray;
+    async void GetDataArray(){
+        DataArray=await HttpClient.GetFromJsonAsync<Department[]?>(NavigationManager.BaseUri + "Departments"+"/"+"?id="+id);
+        StateHasChanged();
+    }
+    private List<WeatherForecast>? forecasts;
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
-    }
+        //forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+    } 
+    *@
 }

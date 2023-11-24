@@ -31,10 +31,10 @@ else
         </tfoot>
     </table>
 }
-@inject Data.WeatherForecastService ForecastService
+
 @code {
     //public IEnumerable<ItemType>? forcasts;
-    [Parameter] public ItemType[]? Data { get; set; }
+    [Parameter] public List<ItemType>? Data { get; set; }
     [Parameter] public String Name { get; set; } = "Fetching Data From A Service";
 
     [Parameter] public RenderFragment<String>? ContentTemplet { get; set; }
