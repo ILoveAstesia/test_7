@@ -1,0 +1,65 @@
+﻿@page "/"
+@using Data
+@inject WeatherForecastService ForecastService
+@using test_7.Component
+
+@* <ListComponent Name="FoodList!" Data="" ItemType="">
+
+</ListComponent> *@
+
+
+<ListComponent Name="Weather List" Data="forecasts" ItemType="WeatherForecast">
+    <HeadTemplet>
+        <th>Date</th>
+        <th>Temp. (C)</th>
+        <th>Temp. (F)</th>
+        <th>Summary</th>
+    </HeadTemplet>
+    <RowTemplet>
+        <td>@context.Date</td>
+        <td>@context.TemperatureC</td>
+        <td>@context.TemperatureF</td>
+        <td>@context.Summary</td>
+    </RowTemplet>
+    <ContentTemplet>
+    @displayPass
+        
+        @context
+        @forecasts!.Count()
+    </ContentTemplet>
+</ListComponent>
+
+<RenderTest />
+
+<!-- #region -->
+
+@* 
+<input type="text" @bind=Context @oninput=input />
+<br>
+@Context 
+@code{
+    String Context="What is Your Day?";
+    void input(ChangeEventArgs e){
+        Context=e.Value!.ToString()+",";
+    }
+*@
+<!-- #endregion -->
+
+<PasswordEntry @bind-inerpassword=displayPass />
+
+
+@code {
+    String? displayPass="未输入";
+
+    System.Data.DataSet? getDatas;
+
+    void getData(){
+        //getDatas==
+    }
+
+    private WeatherForecast[]? forecasts;
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+    }
+}
