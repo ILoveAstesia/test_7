@@ -58,7 +58,7 @@ Name:<input type="text" @bind=dept.Name>
 <button @onclick=addDepartment disabled=@isSubmitting >Add a NewDepartment</button>
 <br>
 <input type="number" @bind=SearchId>
-<button @onclick=GetDataList class="primary" >GetData</button>
+<button @onclick=GetDeptById class="primary" >GetData</button>
 <button @onclick=GetAllDept class="secondary">RefreshDept</button>
 
 <ListComponent Name="Department" ItemType="Department" Data="DataList">
@@ -68,7 +68,7 @@ Name:<input type="text" @bind=dept.Name>
 </HeadTemplet>
 <RowTemplet>
     <td>@context.Id</td>
-    <td>@context.Name</td>
+    <td><input @bind-value=@context.Name></td>
 </RowTemplet>
 <ContentTemplet>
 
@@ -77,32 +77,39 @@ Name:<input type="text" @bind=dept.Name>
 </ContentTemplet>
 </ListComponent>
 
-@inject HttpClient HttpClient;
-@inject NavigationManager NavigationManager;
+@inject DepartmentService dps;
 @code {
     //String? displayPass="未输入";
     //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
-    int SearchId ;
-    List<Department>? DataList;
-    protected override Task OnAfterRenderAsync(bool firstRender)
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(firstRender){
-            GetAllDept();
-            //StateHasChanged();
+        await GetAllDept();
+        //StateHasChanged();
         }
-        return  base.OnAfterRenderAsync(firstRender);
+        await 
+        base.OnAfterRenderAsync(firstRender);
     }
-    async void GetDataList(){
-        DataList=await HttpClient
-        .GetFromJsonAsync<List<Department>>
-            (NavigationManager.BaseUri + "Departments"+"/"+SearchId);//+"?id="
+    int SearchId ;
+    List<Department>? DataList;
+    async Task GetDeptById(){
+        var a=await dps.GetByIdAsync(SearchId); 
+        if(a is null){
+            Console.WriteLine("cant get datalist all,may time out or null database;");
+            return;
+        }
+        DataList=a;
         StateHasChanged();
     }
 
-    async void GetAllDept(){
-        DataList=await HttpClient
-        .GetFromJsonAsync<List<Department>>
-            (NavigationManager.BaseUri + "Departments/");
+    async Task GetAllDept(){
+        var a=await dps.GetAllAsync(); 
+        if(a is null){
+            Console.WriteLine("cant get datalist all,may time out or null database;");
+            return;
+        }
+        DataList=a;
         StateHasChanged();
     }
     bool isSubmitting=false;
@@ -114,10 +121,15 @@ Name:<input type="text" @bind=dept.Name>
         if(dept is null)
         {return;}
         isSubmitting = true;
-        await HttpClient.PostAsJsonAsync($"{NavigationManager.BaseUri}Departments", dept);
+        await dps.AddAsync(dept);
         isSubmitting = false;
-        GetAllDept();
+        await GetAllDept();
         //NavigationManager.NavigateTo("/",true);//refresh
+    }
+
+    void UpdateDepartment(){
+        //Console.WriteLine("Keypress");
+        //await dps.Update(DataList);
     }
 
 }

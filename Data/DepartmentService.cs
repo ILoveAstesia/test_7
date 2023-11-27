@@ -1,40 +1,40 @@
-using System.Data.Common;
+//using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using test_7.Model;
 
 namespace test_7.Data;
-[Route("Departments")]
-[ApiController]
-public class DepartmentGetService{
-    readonly test_7Context _db;
-
-    public DepartmentGetService(test_7Context db){
-        _db=db;
+public class DepartmentService
+{   String apiAddress="http://localhost:5198/";
+    readonly HttpClient _httpClient;
+    //readonly test_7 _db;
+    //NavigationManager nvg;
+    public DepartmentService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+        //nvg.Uri=_httpClient ;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<List<Department>>> All(){
-        return await _db.Departments.ToListAsync();
+    public async Task<List<Department>?> GetAllAsync()
+    {
+        return await _httpClient.GetFromJsonAsync<List<Department>>(apiAddress + "Departments/");
     }
 
-    [HttpGet("{id}", Name = "GetById")]
-    [ActionName("Get1")]
-    public async Task<ActionResult<List<Department>>> ById(int id){
-        //await _db.Departments.ToListAsync();
-        //await _db.Departments.Where(p => p.Id == id).ToListAsync()
-        return 
-        (await _db.Departments.Where(p => p.Id == id).ToListAsync())
-        .OrderByDescending(p => p.Id)
-        .ToList();
+    public async Task<List<Department>?> GetByIdAsync(int id)
+    {
+        return
+        await _httpClient
+        .GetFromJsonAsync<List<Department>>
+            (apiAddress + "Departments" + "/" + id);//+"?id="
+
     }
 
-    //
-    [HttpPost]
-    public async Task Add(Department dept){
-        _db.Departments.Add(dept);
-        await _db.SaveChangesAsync();
+    public async Task AddAsync(Department department)
+    {
+        await _httpClient.PostAsJsonAsync($"{apiAddress}Departments", department);
     }
+
+
+
 
 
 }
