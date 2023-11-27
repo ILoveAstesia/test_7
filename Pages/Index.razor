@@ -57,12 +57,7 @@ Context=e.Value!.ToString()+",";
 
 <!-- #endregion -->
 
-Id:<br><input type="number" @bind=dept!.Id >
-<br>
-Name:<br><input type="text" @bind=dept.Name>
-<br>
-<button @onclick=addDepartment disabled=@isSubmitting class="btn-primary">Add a NewDepartment</button>
-<br>
+
 
 
 <input type="number" @bind=SearchId>
@@ -87,12 +82,14 @@ Name:<br><input type="text" @bind=dept.Name>
 <button @onclick=UpdateDepartment class="btn-secondary">Update</button>
 <button @onclick=DeleteDepartment class="btn-danger">Delete</button>
 </th>
+<br>
+
     </HeadTemplet>
     <RowTemplet>
         <td></td>
         <td>@context.Id</td>
         <td><input @bind-value=@context.Name></td>
-        <td>
+         <td>
             @{
                 void select(){
                     
@@ -105,14 +102,20 @@ Name:<br><input type="text" @bind=dept.Name>
                 }
             }
             <input type="checkbox" @onclick=select   />
-            <button class=" disabled " disabled="true" @onclick="@(
+            @* <button class=" disabled " disabled="true" @onclick="@(
                 e=> dps.DeleteAsync(context.Id)
-                )">Delete</button>
-        </td>
+                )">Delete</button> *@
+        </td> 
     </RowTemplet>
     <ContentTemplet>
 
         <p>TotalNumber:@DataList!.Count();</p>
+        
+<td><input type="number" @bind=dept!.Id ></td>
+
+<td><input type="text" @bind=dept.Name></td>
+
+<td><button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary" >Add a NewDepartment</button></td>
 
     </ContentTemplet>
 </ListComponent>
