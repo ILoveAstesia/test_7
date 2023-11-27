@@ -1,8 +1,4 @@
 ﻿@page "/"
-@using Data
-@inject WeatherForecastService ForecastService
-@using test_7.Component
-@using test_7.Model
 
 <!-- #region -->
 @* <ListComponent Name="FoodList!" Data="" ItemType="">
@@ -55,12 +51,15 @@
 } *@
 <!-- #endregion -->
 
-<input type="number" @bind=id>
+Id:<input type="number" @bind=dept!.Id>
 <br>
+Name:<input type="text" @bind=dept.Name>
+<br>
+<button @onclick=addDepartment disabled=@isSubmitting >Add a NewDepartment</button>
+<br>
+<input type="number" @bind=SearchId>
 <button @onclick=GetDataList class="primary" >GetData</button>
-<br>
 <button @onclick=GetAllDept class="secondary">RefreshDept</button>
-
 
 <ListComponent Name="Department" ItemType="Department" Data="DataList">
 <HeadTemplet>
@@ -81,25 +80,50 @@
 @inject HttpClient HttpClient;
 @inject NavigationManager NavigationManager;
 @code {
-    String? displayPass="未输入";
-    int id ;
+    //String? displayPass="未输入";
+    //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
+    int SearchId ;
     List<Department>? DataList;
-    async void GetDataList(){
-        DataList=await HttpClient.GetFromJsonAsync<List<Department>>(NavigationManager.BaseUri + "Departments"+"/"+id);//+"?id="
-        StateHasChanged();
-    }
-
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        GetAllDept();
+        if(firstRender){
+            GetAllDept();
+            //StateHasChanged();
+        }
         return  base.OnAfterRenderAsync(firstRender);
     }
-
-    private async void GetAllDept(){
-        DataList=await HttpClient.GetFromJsonAsync<List<Department>>(NavigationManager.BaseUri + "Departments/");
+    async void GetDataList(){
+        DataList=await HttpClient
+        .GetFromJsonAsync<List<Department>>
+            (NavigationManager.BaseUri + "Departments"+"/"+SearchId);//+"?id="
         StateHasChanged();
     }
 
+    async void GetAllDept(){
+        DataList=await HttpClient
+        .GetFromJsonAsync<List<Department>>
+            (NavigationManager.BaseUri + "Departments/");
+        StateHasChanged();
+    }
+    bool isSubmitting=false;
+    Department? dept=new();
+    //[System.ComponentModel.DataAnnotations.Required]
+    //int newId;
+    //String newName="newDepartmentName";
+    async Task addDepartment(){
+        if(dept is null)
+        {return;}
+        isSubmitting = true;
+        await HttpClient.PostAsJsonAsync($"{NavigationManager.BaseUri}Departments", dept);
+        isSubmitting = false;
+        GetAllDept();
+        //NavigationManager.NavigateTo("/",true);//refresh
+    }
+
+}
+
+@code{
+    
     //persons = await HttpClient.GetFromJsonAsync<List<Person>>(NavigationManager.BaseUri + "persons"+"/"+"?id="+id);
     //await HttpClient.PostAsJsonAsync($"{NavigationManager.BaseUri}persons", person);
   

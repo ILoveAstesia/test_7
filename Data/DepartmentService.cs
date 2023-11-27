@@ -18,7 +18,7 @@ public class DepartmentGetService{
         return await _db.Departments.ToListAsync();
     }
 
-    [HttpGet("{id}", Name = "GetTest")]
+    [HttpGet("{id}", Name = "GetById")]
     [ActionName("Get1")]
     public async Task<ActionResult<List<Department>>> ById(int id){
         //await _db.Departments.ToListAsync();
@@ -27,6 +27,13 @@ public class DepartmentGetService{
         (await _db.Departments.Where(p => p.Id == id).ToListAsync())
         .OrderByDescending(p => p.Id)
         .ToList();
+    }
+
+    //
+    [HttpPost]
+    public async Task Add(Department dept){
+        _db.Departments.Add(dept);
+        await _db.SaveChangesAsync();
     }
 
 
