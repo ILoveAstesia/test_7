@@ -33,8 +33,22 @@ public class DepartmentService
         await _httpClient.PostAsJsonAsync($"{apiAddress}Departments", department);
     }
 
+    public async Task UpdateAsync(List<Department> deptlist)
+    {
+        await _httpClient.PostAsJsonAsync($"{apiAddress}Departments"+"/"+"Update", deptlist);
+    }
 
+    public async Task DeleteAsync(List<int>? idlist)
+    {
+        Console.WriteLine("point delete idlist");
+        await _httpClient.PostAsJsonAsync($"{apiAddress}Departments"+"/"+"Delete", idlist);
+    }
 
+    public async Task DeleteAsync(int id)
+    {
+        Console.WriteLine("point delete id");
+        await _httpClient.PostAsJsonAsync($"{apiAddress}Departments"+"/"+"Delete/one",id);
+    }
 
 
 }

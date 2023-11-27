@@ -11,7 +11,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddSingleton<WeatherForecastService>();
+//builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<DepartmentService>();
 
 
@@ -30,15 +30,17 @@ builder.Services.AddDbContext<test_7Context>(opt =>
 var app = builder.Build();
 
 //add seeding service
-// var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-// using (var scope = scopeFactory.CreateScope())
-// {
-//     var db = scope.ServiceProvider.GetRequiredService<test_7Context>();
-//     if (db.Database.EnsureCreated())
-//     {
-//         SeedData.Initialize(db);
-//     }
-// }
+/*
+var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+using (var scope = scopeFactory.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<test_7Context>();
+    if (db.Database.EnsureCreated())
+    {
+        SeedData.Initialize(db);
+    }
+}
+*/
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -56,7 +58,7 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-
+//MapControllerRoute
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

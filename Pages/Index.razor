@@ -7,25 +7,25 @@
 
 
 @* <ListComponent Name="Weather List" Data="forecasts" ItemType="WeatherForecast">
-    <HeadTemplet>
-        <th>Date</th>
-        <th>Temp. (C)</th>
-        <th>Temp. (F)</th>
-        <th>Summary</th>
-    </HeadTemplet>
-    <RowTemplet>
-        <td>@context.Date</td>
-        <td>@context.TemperatureC</td>
-        <td>@context.TemperatureF</td>
-        <td>@context.Summary</td>
-    </RowTemplet>
-    <ContentTemplet>
-    @displayPass
-        
-        @context
-        @forecasts!.Count()
-    </ContentTemplet>
-</ListComponent> 
+<HeadTemplet>
+<th>Date</th>
+<th>Temp. (C)</th>
+<th>Temp. (F)</th>
+<th>Summary</th>
+</HeadTemplet>
+<RowTemplet>
+<td>@context.Date</td>
+<td>@context.TemperatureC</td>
+<td>@context.TemperatureF</td>
+<td>@context.Summary</td>
+</RowTemplet>
+<ContentTemplet>
+@displayPass
+
+@context
+@forecasts!.Count()
+</ContentTemplet>
+</ListComponent>
 
 <RenderTest />
 <PasswordEntry @bind-inerpassword=displayPass />
@@ -33,93 +33,143 @@
 
 
 
-@* 
+@*
 <input type="text" @bind=Context @oninput=input />
 <br>
-@Context 
+@Context
 @code{
-    String Context="What is Your Day?";
-    void input(ChangeEventArgs e){
-        Context=e.Value!.ToString()+",";
-    }
+String Context="What is Your Day?";
+void input(ChangeEventArgs e){
+Context=e.Value!.ToString()+",";
+}
 *@
 
 @* @if(DataList is null){
-    <p>loading...</p>
+<p>loading...</p>
 }else{
 @DataList;
-} *@
+}
+
+@onclick="@(e => total = number1 + number2)"
+
+*@
+
+
 <!-- #endregion -->
 
-Id:<input type="number" @bind=dept!.Id>
+Id:<br><input type="number" @bind=dept!.Id >
 <br>
-Name:<input type="text" @bind=dept.Name>
+Name:<br><input type="text" @bind=dept.Name>
 <br>
-<button @onclick=addDepartment disabled=@isSubmitting >Add a NewDepartment</button>
+<button @onclick=addDepartment disabled=@isSubmitting class="btn-primary">Add a NewDepartment</button>
 <br>
+
+
 <input type="number" @bind=SearchId>
-<button @onclick=GetDeptById class="primary" >GetData</button>
-<button @onclick=GetAllDept class="secondary">RefreshDept</button>
+<button @onclick=GetDeptById class="btn-primary">GetData</button>
+<br>
 
-<ListComponent Name="Department" ItemType="Department" Data="DataList">
-<HeadTemplet>
-    <th>Id</th>
-    <th>Name</th>
-</HeadTemplet>
-<RowTemplet>
-    <td>@context.Id</td>
-    <td><input @bind-value=@context.Name></td>
-</RowTemplet>
-<ContentTemplet>
 
-    <p>TotalNumber:@DataList!.Count();</p>
+@*
+<EditForm Model="selectedIdList">
+<InputCheckbox>
+</InputCheckbox>
+</EditForm>
+*@
+<div class=" list-group">
+<ListComponent Name="Department" ItemType="Department" Data="DataList" >
+    <HeadTemplet>
+        <th>OrderNumber</th>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Operation 
+<button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
+<button @onclick=UpdateDepartment class="btn-secondary">Update</button>
+<button @onclick=DeleteDepartment class="btn-danger">Delete</button>
+</th>
+    </HeadTemplet>
+    <RowTemplet>
+        <td></td>
+        <td>@context.Id</td>
+        <td><input @bind-value=@context.Name></td>
+        <td>
+            @{
+                void select(){
+                    
+                    if (selectedIdList!.Contains (context.Id))
+                    {
+                        selectedIdList.Remove(context.Id);
+                        return;
+                    }
+                    selectedIdList.Add(context.Id);
+                }
+            }
+            <input type="checkbox" @onclick=select   />
+            <button class=" disabled " disabled="true" @onclick="@(
+                e=> dps.DeleteAsync(context.Id)
+                )">Delete</button>
+        </td>
+    </RowTemplet>
+    <ContentTemplet>
 
-</ContentTemplet>
+        <p>TotalNumber:@DataList!.Count();</p>
+
+    </ContentTemplet>
 </ListComponent>
-
+</div>
 @inject DepartmentService dps;
 @code {
+
     //String? displayPass="未输入";
     //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender){
-        await GetAllDept();
-        //StateHasChanged();
+        if (firstRender)
+        {
+            await GetAllDept();
+            //StateHasChanged();
         }
-        await 
+        await
         base.OnAfterRenderAsync(firstRender);
     }
-    int SearchId ;
+    int SearchId;
     List<Department>? DataList;
-    async Task GetDeptById(){
-        var a=await dps.GetByIdAsync(SearchId); 
-        if(a is null){
+    async Task GetDeptById()
+    {
+        var a = await dps.GetByIdAsync(SearchId);
+        if (a is null)
+        {
             Console.WriteLine("cant get datalist all,may time out or null database;");
             return;
         }
-        DataList=a;
+        DataList = a;
         StateHasChanged();
     }
 
-    async Task GetAllDept(){
-        var a=await dps.GetAllAsync(); 
-        if(a is null){
+    async Task GetAllDept()
+    {
+        var a = await dps.GetAllAsync();
+        if (a is null)
+        {
             Console.WriteLine("cant get datalist all,may time out or null database;");
             return;
         }
-        DataList=a;
+        DataList = a;
         StateHasChanged();
     }
-    bool isSubmitting=false;
-    Department? dept=new();
+    bool isSubmitting = false;
+    Department? dept = new();
     //[System.ComponentModel.DataAnnotations.Required]
     //int newId;
     //String newName="newDepartmentName";
-    async Task addDepartment(){
-        if(dept is null)
-        {return;}
+    async Task addDepartment()
+    {
+        if (dept is null)
+        {
+            Console.WriteLine("Input value is null please reEnter");
+            return;
+        }
         isSubmitting = true;
         await dps.AddAsync(dept);
         isSubmitting = false;
@@ -127,28 +177,54 @@ Name:<input type="text" @bind=dept.Name>
         //NavigationManager.NavigateTo("/",true);//refresh
     }
 
-    void UpdateDepartment(){
-        //Console.WriteLine("Keypress");
-        //await dps.Update(DataList);
+    async Task UpdateDepartment()
+    {
+        await dps.UpdateAsync(DataList!);
+        
     }
+    List<int>? selectedIdList = new();
+    async Task DeleteDepartment()
+    {
+        if (selectedIdList is null)
+        {
+
+            return;
+        }
+        foreach (var i in selectedIdList)
+        {
+            Console.WriteLine(i.ToString());
+        }
+        @* return; *@
+        await dps.DeleteAsync(selectedIdList);
+        selectedIdList = new();
+        await GetAllDept();
+        //StateHasChanged();
+    }
+
+    @* void UpdateDepartment(){
+
+//await dps.UpdateAsync(DataList!);
+//Console.WriteLine("Keypress");
+//await dps.Update(DataList);
+} *@
 
 }
 
-@code{
-    
+@code {
+
     //persons = await HttpClient.GetFromJsonAsync<List<Person>>(NavigationManager.BaseUri + "persons"+"/"+"?id="+id);
     //await HttpClient.PostAsJsonAsync($"{NavigationManager.BaseUri}persons", person);
-  
-    @* 
-    Department[]? DataArray;
-    async void GetDataArray(){
-        DataArray=await HttpClient.GetFromJsonAsync<Department[]?>(NavigationManager.BaseUri + "Departments"+"/"+"?id="+id);
-        StateHasChanged();
-    }
-    private List<WeatherForecast>? forecasts;
-    protected override async Task OnInitializedAsync()
-    {
-        //forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
-    } 
-    *@
+
+    @*
+Department[]? DataArray;
+async void GetDataArray(){
+DataArray=await HttpClient.GetFromJsonAsync<Department[]?>(NavigationManager.BaseUri + "Departments"+"/"+"?id="+id);
+StateHasChanged();
+}
+private List<WeatherForecast>? forecasts;
+protected override async Task OnInitializedAsync()
+{
+//forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+}
+*@
 }
