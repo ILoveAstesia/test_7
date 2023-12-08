@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using test_7.Data;
 
@@ -11,11 +10,9 @@ using test_7.Data;
 namespace test7.Migrations
 {
     [DbContext(typeof(test_7Context))]
-    [Migration("20231208143328_test_for_clazz")]
-    partial class testforclazz
+    partial class test7ContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,13 +21,13 @@ namespace test7.Migrations
 
             modelBuilder.Entity("ClassStudent", b =>
                 {
-                    b.Property<int>("StuClazzsId")
+                    b.Property<int>("ClazzsNeedToStudyId")
                         .HasColumnType("int");
 
                     b.Property<int>("StudentsId")
                         .HasColumnType("int");
 
-                    b.HasKey("StuClazzsId", "StudentsId");
+                    b.HasKey("ClazzsNeedToStudyId", "StudentsId");
 
                     b.HasIndex("StudentsId");
 
@@ -39,13 +36,13 @@ namespace test7.Migrations
 
             modelBuilder.Entity("ClassTeacher", b =>
                 {
-                    b.Property<int>("TeachClazzsId")
+                    b.Property<int>("ClazzsNeedtoTeachId")
                         .HasColumnType("int");
 
                     b.Property<int>("TeachersId")
                         .HasColumnType("int");
 
-                    b.HasKey("TeachClazzsId", "TeachersId");
+                    b.HasKey("ClazzsNeedtoTeachId", "TeachersId");
 
                     b.HasIndex("TeachersId");
 
@@ -142,7 +139,7 @@ namespace test7.Migrations
                 {
                     b.HasOne("test_7.Model.Class", null)
                         .WithMany()
-                        .HasForeignKey("StuClazzsId")
+                        .HasForeignKey("ClazzsNeedToStudyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -157,7 +154,7 @@ namespace test7.Migrations
                 {
                     b.HasOne("test_7.Model.Class", null)
                         .WithMany()
-                        .HasForeignKey("TeachClazzsId")
+                        .HasForeignKey("ClazzsNeedtoTeachId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
