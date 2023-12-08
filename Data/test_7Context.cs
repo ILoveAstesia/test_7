@@ -23,7 +23,7 @@ public class test_7Context : DbContext
     {
         modelBuilder.Entity<Class>()
         .HasMany(e => e.Students)
-        .WithMany(e => e.StuClazzs);
+        .WithMany(e => e.ClazzsNeedToStudy);
         // .UsingEntity(
         //     l => l.HasOne(typeof(Class)).WithMany().HasForeignKey("ClazzsForeignKey"),
         //     r => r.HasOne(typeof(Person)).WithMany().HasForeignKey("TeachersForeignKey")
@@ -31,7 +31,7 @@ public class test_7Context : DbContext
 
         modelBuilder.Entity<Class>()
         .HasMany(e => e.Teachers)
-        .WithMany(e => e.TeachClazzs);
+        .WithMany(e => e.ClazzsNeedtoTeach);
 
         // modelBuilder.Entity<Person>()
         // .HasMany(e => e.Clazzs)

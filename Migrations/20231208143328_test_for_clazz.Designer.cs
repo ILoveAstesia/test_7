@@ -11,8 +11,8 @@ using test_7.Data;
 namespace test7.Migrations
 {
     [DbContext(typeof(test_7Context))]
-    [Migration("20231208133958_initial")]
-    partial class initial
+    [Migration("20231208143328_test_for_clazz")]
+    partial class testforclazz
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -25,49 +25,41 @@ public static class SeedData
         var teacher1 = new Teacher(){
             Id=1,
             Name = "刘",
-            //Detail = "It's cheesy and delicious. Why wouldn't you want one?",
-        };
+            };
 
         var teacher2 = new Teacher(){
             Id=2,
             Name = "徐",
-            //Detail = "It's cheesy and delicious. Why wouldn't you want one?",
-        };
+            };
 
         var teacher3 = new Teacher(){
             Id=3,
             Name = "罗",
-            //Detail = "It's cheesy and delicious. Why wouldn't you want one?",
-        };
+            };
 
         var stu1 = new Student(){
             Id=4,
             Name = "可乐",
-            //Detail = "It's cheesy and delicious. Why wouldn't you want one?",
-        };
+            };
 
         var stu2 = new Student(){
             Id=5,
             Name = "桃桃",
-            //Detail = "It's cheesy and delicious. Why wouldn't you want one?",
-        };
+            };
 
         var stu3 = new Student(){
             Id=6,
             Name = "洋洋",
-            //Detail = "It's cheesy and delicious. Why wouldn't you want one?",
-        };
+            };
 
         var par1 = new Person(){
             Id=7,
             Name = "可乐妈",
-            //Detail = "It's cheesy and delicious. Why wouldn't you want one?",
-        };
+            };
 
         var par2 = new Person(){
             Id=8,
             Name = "可乐爸",
-            //Detail = "It's cheesy and delicious. Why wouldn't you want one?",
         };
 
         //List<Person> parl=person7,person8;
@@ -113,9 +105,9 @@ public static class SeedData
             Name="大疆特洛 2b-1",
             Date=DateTime.Now.AddDays(-2),//如何拼接两段时间对象，日期和时间
         };
-        clazz1.Teachers.Add(teacher2);
-        clazz1.Students.Add(stu1);
-        clazz1.Students.Add(stu2);
+        clazz2.Teachers.Add(teacher2);
+        clazz2.Students.Add(stu1);
+        clazz2.Students.Add(stu2);
 
         db.Clazzs.AddRange(clazz1,clazz2);
 
