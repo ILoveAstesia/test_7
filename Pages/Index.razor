@@ -55,76 +55,112 @@ Context=e.Value!.ToString()+",";
 *@
 
 
-<!-- #endregion -->
-
-
-
-
-<input type="number" @bind=SearchId>
-<button @onclick=GetDeptById class="btn-primary">GetData</button>
-<br>
-
-
 @*
 <EditForm Model="selectedIdList">
 <InputCheckbox>
 </InputCheckbox>
 </EditForm>
 *@
-<div class=" list-group">
-<ListComponent Name="Department" ItemType="Department" Data="DataList" >
-    <HeadTemplet>
-        <th>OrderNumber</th>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Operation 
-<button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
-<button @onclick=UpdateDepartment class="btn-secondary">Update</button>
-<button @onclick=DeleteDepartment class="btn-danger">Delete</button>
-</th>
+
+
+<!-- #endregion -->
+@if (errormsg.Any())
+{
+    class2.Date=new DateTime(2023,12,8,16,30,00);
+    //"2023/12/6 18:30:00";
+    errormsg+=class2.Date;
+    <div>
+        <p class=" bg-danger text-warning  p-3  w-70   ">@errormsg</p>
+        <button @onclick="@(e=> errormsg="")" class=" btn-close "></button>
+    </div>
+}
+
+select department by Id:
+<input type="number" @bind=SearchId>
+<button @onclick=GetDeptById class="btn-primary">GetData</button>
 <br>
 
-    </HeadTemplet>
-    <RowTemplet>
-        <td></td>
-        <td>@context.Id</td>
-        <td><input @bind-value=@context.Name></td>
-         <td>
-            @{
-                void select(){
-                    
-                    if (selectedIdList!.Contains (context.Id))
-                    {
-                        selectedIdList.Remove(context.Id);
-                        return;
-                    }
-                    selectedIdList.Add(context.Id);
+
+<div class=" ">
+    <ListComponent Name="Department" ItemType="Department" Data="DataList">
+
+        <HeadTemplet>
+            <th>OrderNumber</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Operation
+                <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
+                <button @onclick=UpdateDepartment class="btn-secondary">Update</button>
+                @* @{
+                bool notContains =false;
+
+                if(selectedIdList is not null){
+                notContains=!selectedIdList.Any();
+                return;
                 }
-            }
-            <input type="checkbox" @onclick=select   />
-            @* <button class=" disabled " disabled="true" @onclick="@(
+
+                disabled=@notContains
+                } *@
+                <button @onclick=DeleteDepartment class="btn-danger">Delete</button>
+
+            </th>
+            <br>
+
+        </HeadTemplet>
+        <RowTemplet>
+            <td></td>
+            <td>@context.Id</td>
+            <td><input @bind-value=@context.Name></td>
+            <td>
+                @{
+                    void select()
+                    {
+
+                        if (selectedIdList!.Contains(context.Id))
+                        {
+                            selectedIdList.Remove(context.Id);
+                            return;
+                        }
+                        selectedIdList.Add(context.Id);
+                    }
+                }
+                <input type="checkbox" @onclick=select />
+                @* <button class=" disabled " disabled="true" @onclick="@(
                 e=> dps.DeleteAsync(context.Id)
                 )">Delete</button> *@
-        </td> 
-    </RowTemplet>
-    <ContentTemplet>
+            </td>
+        </RowTemplet>
+        <ContentTemplet>
 
-        <p>TotalNumber:@DataList!.Count();</p>
-        
-<td><input type="number" @bind=dept!.Id ></td>
+            <p>TotalNumber:@DataList!.Count();</p>
 
-<td><input type="text" @bind=dept.Name></td>
+            <td><input type="number" @bind=dept!.Id class=" input-group-text"></td>
 
-<td><button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary" >Add a NewDepartment</button></td>
+            <td><input type="text" @bind=dept.Name class=" input-group-text"></td>
 
-    </ContentTemplet>
-</ListComponent>
+            <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a NewDepartment</button>
+        </ContentTemplet>
+    </ListComponent>
 </div>
 @inject DepartmentService dps;
+@inject NavigationManager NavigationManager;
 @code {
+
+    public Class class2 = new Class
+    {
+        Id=1001,
+        Name="慧编程1a-1",
+        Date=DateTime.Now,        
+
+    };
 
     //String? displayPass="未输入";
     //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
+    //错误提示信息
+    String errormsg = "";
+    
+
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -175,24 +211,36 @@ Context=e.Value!.ToString()+",";
         }
         isSubmitting = true;
         await dps.AddAsync(dept);
+        Thread.Sleep(1000);
         isSubmitting = false;
-        await GetAllDept();
-        //NavigationManager.NavigateTo("/",true);//refresh
+        //await GetAllDept();
+        NavigationManager.NavigateTo("/", true);//refresh
     }
 
     async Task UpdateDepartment()
     {
         await dps.UpdateAsync(DataList!);
-        
+
     }
     List<int>? selectedIdList = new();
+
     async Task DeleteDepartment()
     {
+        //如果没有被选中 不应该让按钮生效
         if (selectedIdList is null)
         {
-
+            Console.WriteLine("cant null delete");
+            errormsg += "cant null delete";
             return;
         }
+
+        if (!selectedIdList.Any())
+        {
+            Console.WriteLine("cant null delete");
+            errormsg += "cant null delete";
+            return;
+        }
+
         foreach (var i in selectedIdList)
         {
             Console.WriteLine(i.ToString());
@@ -200,8 +248,9 @@ Context=e.Value!.ToString()+",";
         @* return; *@
         await dps.DeleteAsync(selectedIdList);
         selectedIdList = new();
-        await GetAllDept();
-        //StateHasChanged();
+        //await GetAllDept();
+        NavigationManager.NavigateTo("/", true);//refresh
+                                                //StateHasChanged();
     }
 
     @* void UpdateDepartment(){

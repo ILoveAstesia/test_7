@@ -31,16 +31,17 @@ var app = builder.Build();
 
 //add seeding service
 /*
+*/
 var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 using (var scope = scopeFactory.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<test_7Context>();
-    if (db.Database.EnsureCreated())
+    if (db.Database.EnsureCreated() || !db.Persons.Any() )
     {
+        
         SeedData.Initialize(db);
     }
 }
-*/
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

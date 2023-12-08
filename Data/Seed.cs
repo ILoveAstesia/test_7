@@ -30,7 +30,6 @@ public static class SeedData
         };
         person.Departments.Add(a);
 
-        
         db.Persons.AddRange(person);
         db.Departments.AddRange(a,b,c);
         db.SaveChanges();

@@ -19,8 +19,62 @@ public class test_7Context : DbContext
 
     }
 
+    
+    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Class>()
+        .HasMany(e => e.Students)
+        .WithMany(e => e.StuClazzs);
+        // .UsingEntity(
+        //     l => l.HasOne(typeof(Class)).WithMany().HasForeignKey("ClazzsForeignKey"),
+        //     r => r.HasOne(typeof(Person)).WithMany().HasForeignKey("TeachersForeignKey")
+        // );
+
+        modelBuilder.Entity<Class>()
+        .HasMany(e => e.Teachers)
+        .WithMany(e => e.TeachClazzs);
+
+        // modelBuilder.Entity<Person>()
+        // .HasMany(e => e.Clazzs)
+        // .WithMany(e => e.Teachers).UsingEntity("TeachersInClass");
+
+
+        // modelBuilder.Entity<Teacher>()
+        //     .HasMany(e => e.Clazzs)
+        //     .WithMany(e => e.Teachers)
+        //     .UsingEntity(
+        //         l => l.HasOne(typeof(Class)).WithMany().HasForeignKey("ClazzsForeignKey"),
+        //         r => r.HasOne(typeof(Person)).WithMany().HasForeignKey("TeachersForeignKey")
+        //     );
+
+
+        // modelBuilder.Entity<Class>()
+        // .HasMany(c => c.Students)
+        // .WithMany(e => e.Clazzs);
+                           //.HasForeignKey(con => con.EndCityId);
+
+        // modelBuilder.Entity<Class>()
+        // .HasMany(c => c.Teachers)
+        // .WithMany(e => e.Clazzs);
+
+        // modelBuilder.Entity<Class>()
+        // .HasMany(c => c.Students)
+        // .WithMany(e => e.Clazzs);
+
+
+        
+        //                    //.HasForeignKey(con => con.StartCityId);
+        base.OnModelCreating(modelBuilder);
+        //继承自IEntityTypeConfiguration<>的各实体 Fluent API
+        //modelBuilder.ApplyConfigurationsFromAssembly(typeof(XXXCoreModule).Assembly);
+    }
+
+
     public DbSet<Person> Persons { get; set; }
     public DbSet<Department> Departments { get; set; }
+    public DbSet<Class> Clazzs { get; set; }
     //public DbSet<DepartmentPerson> DepartmentPersons { get; set; }
     /**
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -66,9 +120,5 @@ public class test_7Context : DbContext
             
     }
     **/
-        
-    public void GetPersonById(){
-        
-    }
 
 }
