@@ -19,9 +19,6 @@ public class test_7Context : DbContext
 
     }
 
-    
-    
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Class>()
