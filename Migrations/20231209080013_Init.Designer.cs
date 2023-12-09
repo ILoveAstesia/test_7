@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using test_7.Data;
 
@@ -10,9 +11,11 @@ using test_7.Data;
 namespace test7.Migrations
 {
     [DbContext(typeof(test_7Context))]
-    partial class test7ContextModelSnapshot : ModelSnapshot
+    [Migration("20231209080013_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,13 +24,13 @@ namespace test7.Migrations
 
             modelBuilder.Entity("ClassStudent", b =>
                 {
-                    b.Property<int>("ClazzsNeedToStudyId")
+                    b.Property<int>("ClazzsStudedInId")
                         .HasColumnType("int");
 
                     b.Property<int>("StudentsId")
                         .HasColumnType("int");
 
-                    b.HasKey("ClazzsNeedToStudyId", "StudentsId");
+                    b.HasKey("ClazzsStudedInId", "StudentsId");
 
                     b.HasIndex("StudentsId");
 
@@ -47,6 +50,21 @@ namespace test7.Migrations
                     b.HasIndex("TeachersId");
 
                     b.ToTable("ClassTeacher");
+                });
+
+            modelBuilder.Entity("CourseStudent", b =>
+                {
+                    b.Property<int>("PresentCoursesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PresentStudentsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PresentCoursesId", "PresentStudentsId");
+
+                    b.HasIndex("PresentStudentsId");
+
+                    b.ToTable("CourseStudent");
                 });
 
             modelBuilder.Entity("DepartmentPerson", b =>
@@ -70,8 +88,9 @@ namespace test7.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Location")
                         .HasColumnType("longtext");
@@ -83,6 +102,28 @@ namespace test7.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clazzs");
+                });
+
+            modelBuilder.Entity("test_7.Model.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentClazzId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CurrentClazzId");
+
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("test_7.Model.Department", b =>
@@ -125,6 +166,9 @@ namespace test7.Migrations
                 {
                     b.HasBaseType("test_7.Model.Person");
 
+                    b.Property<int>("CourseTimes")
+                        .HasColumnType("int");
+
                     b.HasDiscriminator().HasValue("Student");
                 });
 
@@ -139,7 +183,7 @@ namespace test7.Migrations
                 {
                     b.HasOne("test_7.Model.Class", null)
                         .WithMany()
-                        .HasForeignKey("ClazzsNeedToStudyId")
+                        .HasForeignKey("ClazzsStudedInId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -165,6 +209,21 @@ namespace test7.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("CourseStudent", b =>
+                {
+                    b.HasOne("test_7.Model.Course", null)
+                        .WithMany()
+                        .HasForeignKey("PresentCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("test_7.Model.Student", null)
+                        .WithMany()
+                        .HasForeignKey("PresentStudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DepartmentPerson", b =>
                 {
                     b.HasOne("test_7.Model.Department", null)
@@ -178,6 +237,22 @@ namespace test7.Migrations
                         .HasForeignKey("PersonsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("test_7.Model.Course", b =>
+                {
+                    b.HasOne("test_7.Model.Class", "CurrentClazz")
+                        .WithMany("PlanedCourse")
+                        .HasForeignKey("CurrentClazzId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CurrentClazz");
+                });
+
+            modelBuilder.Entity("test_7.Model.Class", b =>
+                {
+                    b.Navigation("PlanedCourse");
                 });
 #pragma warning restore 612, 618
         }

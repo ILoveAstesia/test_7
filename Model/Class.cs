@@ -12,7 +12,8 @@ public class Class{
     public List<Student> Students { get;set; } = [];
     //[ForeignKey("ClassId_Teachers")]
     public List<Teacher> Teachers { get;set; } = [];
-    public DateTime Date { get;set; } =new();
+    public List<Course> PlanedCourse{get;set;}=[];
+    public String Date { get;set; } ="";
     //public time
     public String? Location { get;set; }="";
     // public DateTime SetDateTimeToNow(){

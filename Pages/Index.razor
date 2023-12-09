@@ -66,7 +66,8 @@ Context=e.Value!.ToString()+",";
 <!-- #endregion -->
 @if (errormsg.Any())
 {
-    class2.Date=new DateTime(2023,12,8,16,30,00);
+    class2.Date=DateTime.Now.ToShortDateString();
+    //=new DateTime(2023,12,8,16,30,00);
     //"2023/12/6 18:30:00";
     errormsg+=class2.Date;
     <div>
@@ -142,15 +143,18 @@ select department by Id:
         </ContentTemplet>
     </ListComponent>
 </div>
+
+
+
 @inject DepartmentService dps;
 @inject NavigationManager NavigationManager;
 @code {
 
     public Class class2 = new Class
     {
-        Id=1001,
+        //Id=1001,
         Name="慧编程1a-1",
-        Date=DateTime.Now,        
+        Date=DateTime.Now.ToString(),        
 
     };
 
@@ -158,10 +162,6 @@ select department by Id:
     //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
     //错误提示信息
     String errormsg = "";
-    
-
-
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -261,6 +261,81 @@ select department by Id:
 } *@
 
 }
+
+@* 
+select Person by Id:
+<input type="number" @bind=SearchId>
+<button @onclick=GetDeptById class="btn-primary">GetData</button>
+<br>
+
+
+<div class=" ">
+    <ListComponent Name="Persons" ItemType="Person" Data="PersonDataList">
+
+        <HeadTemplet>
+            <th>OrderNumber</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Operation
+                <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
+                <button @onclick=UpdateDepartment class="btn-secondary">Update</button>
+                <button @onclick=DeleteDepartment class="btn-danger">Delete</button>
+            </th>
+            <br>
+        </HeadTemplet>
+        <RowTemplet>
+            <td></td>
+            <td>@context.Id</td>
+            <td><input @bind-value=@context.Name></td>
+            <td>@context.Departments</td>
+            <td>
+                @{
+                    void select()
+                    {
+
+                        if (selectedIdList!.Contains(context.Id))
+                        {
+                            selectedIdList.Remove(context.Id);
+                            return;
+                        }
+                        selectedIdList.Add(context.Id);
+                    }
+                }
+                <input type="checkbox" @onclick=select />
+            </td>
+        </RowTemplet>
+        <ContentTemplet>
+
+            <p>TotalNumber:@PersonDataList!.Count();</p>
+
+            <td><input type="number" @bind=tempPerson!.Id class=" input-group-text"></td>
+            <td><input type="text" @bind=tempPerson.Name class=" input-group-text"></td>
+            <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td>
+
+            <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a Person</button>
+        </ContentTemplet>
+    </ListComponent>
+</div>
+
+
+@code{
+    List<Person> PersonDataList=[];
+    Person tempPerson=new();
+    async Task GetAllPerson()
+    {
+        var a = await dps.GetAllAsync();
+        if (a is null)
+        {
+            Console.WriteLine("cant get datalist all,may time out or null database;");
+            return;
+        }
+        DataList = a;
+        StateHasChanged();
+    }
+    
+} *@
+
 
 @code {
 
