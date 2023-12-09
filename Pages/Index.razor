@@ -66,10 +66,9 @@ Context=e.Value!.ToString()+",";
 <!-- #endregion -->
 @if (errormsg.Any())
 {
-    class2.Date=DateTime.Now.ToShortDateString();
     //=new DateTime(2023,12,8,16,30,00);
     //"2023/12/6 18:30:00";
-    errormsg+=class2.Date;
+    errormsg+=DateTime.Now.ToShortDateString();
     <div>
         <p class=" bg-danger text-warning  p-3  w-70   ">@errormsg</p>
         <button @onclick="@(e=> errormsg="")" class=" btn-close "></button>
@@ -82,7 +81,7 @@ select department by Id:
 <br>
 
 
-<div class=" ">
+<div class="DepartmentList ">
     <ListComponent Name="Department" ItemType="Department" Data="DataList">
 
         <HeadTemplet>
@@ -149,15 +148,6 @@ select department by Id:
 @inject DepartmentService dps;
 @inject NavigationManager NavigationManager;
 @code {
-
-    public Class class2 = new Class
-    {
-        //Id=1001,
-        Name="慧编程1a-1",
-        Date=DateTime.Now.ToString(),        
-
-    };
-
     //String? displayPass="未输入";
     //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
     //错误提示信息
@@ -263,13 +253,11 @@ select department by Id:
 }
 
 @* 
-select Person by Id:
+<div class="PersonLIst">
+    select Person by Id:
 <input type="number" @bind=SearchId>
 <button @onclick=GetDeptById class="btn-primary">GetData</button>
 <br>
-
-
-<div class=" ">
     <ListComponent Name="Persons" ItemType="Person" Data="PersonDataList">
 
         <HeadTemplet>
@@ -289,6 +277,8 @@ select Person by Id:
             <td>@context.Id</td>
             <td><input @bind-value=@context.Name></td>
             <td>@context.Departments</td>
+            @{//这真的能用吗？
+            }
             <td>
                 @{
                     void select()
@@ -300,9 +290,9 @@ select Person by Id:
                             return;
                         }
                         selectedIdList.Add(context.Id);
-                    }
+                    }//@onclick=select
                 }
-                <input type="checkbox" @onclick=select />
+                <input type="checkbox"  />
             </td>
         </RowTemplet>
         <ContentTemplet>
@@ -316,26 +306,34 @@ select Person by Id:
             <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a Person</button>
         </ContentTemplet>
     </ListComponent>
-</div>
-
+</div> *@
+<br>
+<button @onclick=GetAllPerson class=" btn-success ">GetAllPerson</button>
 
 @code{
+    static HttpClient httpclient =new(){
+        BaseAddress=new Uri("http://localhost:5198/"),
+    };
+
+    DaoController Dc=new(httpclient);
+    //List<int> select
     List<Person> PersonDataList=[];
     Person tempPerson=new();
     async Task GetAllPerson()
     {
-        var a = await dps.GetAllAsync();
+        var a = await Dc.GetAllAsync<Person>();
         if (a is null)
         {
             Console.WriteLine("cant get datalist all,may time out or null database;");
             return;
         }
-        DataList = a;
+        PersonDataList = a;
         StateHasChanged();
     }
     
-} *@
+}
 
+<!-- #region -->
 
 @code {
 
@@ -355,3 +353,4 @@ protected override async Task OnInitializedAsync()
 }
 *@
 }
+<!-- #endregion -->

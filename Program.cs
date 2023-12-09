@@ -13,6 +13,7 @@ builder.Services.AddServerSideBlazor();
 
 //builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<DepartmentService>();
+//builder.Services.AddSingleton<DaoService<Type>>();
 
 
 //conect to my sql
