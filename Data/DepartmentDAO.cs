@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using test_7.Data;
+//using test_7.Data;
 using test_7.Model;
+
+namespace test_7.Data;
 
 [Route("Departments")]
 [ApiController]
-public class DepartmentController {
+public class DepartmentDAO {
     readonly test_7Context _db;
 
-    public DepartmentController(test_7Context db){
+    public DepartmentDAO(test_7Context db){
         _db=db;
     }
 

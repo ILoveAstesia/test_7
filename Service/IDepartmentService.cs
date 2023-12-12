@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using test_7.Data;
 using test_7.Model;
 // 弃用组件
 public interface IDepartmentService

@@ -1,5 +1,11 @@
 ﻿@page "/"
 
+@code{
+        static HttpClient httpclient =new(){
+        BaseAddress=new Uri("http://localhost:5198/"),
+    };
+}
+
 <!-- #region -->
 @* <ListComponent Name="FoodList!" Data="" ItemType="">
 
@@ -126,7 +132,7 @@ select department by Id:
                 }
                 <input type="checkbox" @onclick=select />
                 @* <button class=" disabled " disabled="true" @onclick="@(
-                e=> dps.DeleteAsync(context.Id)
+                e=> dpc.DeleteAsync(context.Id)
                 )">Delete</button> *@
             </td>
         </RowTemplet>
@@ -144,13 +150,12 @@ select department by Id:
 </div>
 
 
-
-@inject DepartmentService dps;
 @inject NavigationManager NavigationManager;
 @code {
     //String? displayPass="未输入";
     //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
     //错误提示信息
+    DepartmentController dpc=new(httpclient);
     String errormsg = "";
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -165,8 +170,9 @@ select department by Id:
     int SearchId;
     List<Department>? DataList;
     async Task GetDeptById()
-    {
-        var a = await dps.GetByIdAsync(SearchId);
+    {   //var x = await dpc.GetByIdAsync(SearchId);
+       // List<Department> a = await dpc.GetByIdAsync(SearchId);
+        List<Department>? a= await dpc.GetByIdAsync(SearchId);
         if (a is null)
         {
             Console.WriteLine("cant get datalist all,may time out or null database;");
@@ -178,7 +184,7 @@ select department by Id:
 
     async Task GetAllDept()
     {
-        var a = await dps.GetAllAsync();
+        var a = await dpc.GetAllAsync();
         if (a is null)
         {
             Console.WriteLine("cant get datalist all,may time out or null database;");
@@ -200,7 +206,7 @@ select department by Id:
             return;
         }
         isSubmitting = true;
-        await dps.AddAsync(dept);
+        await dpc.AddAsync(dept);
         Thread.Sleep(1000);
         isSubmitting = false;
         //await GetAllDept();
@@ -209,7 +215,7 @@ select department by Id:
 
     async Task UpdateDepartment()
     {
-        await dps.UpdateAsync(DataList!);
+        await dpc.UpdateAsync(DataList!);
 
     }
     List<int>? selectedIdList = new();
@@ -236,7 +242,7 @@ select department by Id:
             Console.WriteLine(i.ToString());
         }
         @* return; *@
-        await dps.DeleteAsync(selectedIdList);
+        await dpc.DeleteAsync(selectedIdList);
         selectedIdList = new();
         //await GetAllDept();
         NavigationManager.NavigateTo("/", true);//refresh
@@ -245,18 +251,22 @@ select department by Id:
 
     @* void UpdateDepartment(){
 
-//await dps.UpdateAsync(DataList!);
+//await dpc.UpdateAsync(DataList!);
 //Console.WriteLine("Keypress");
-//await dps.Update(DataList);
+//await dpc.Update(DataList);
 } *@
 
 }
 
-@* 
+<!-- #region list code for person-->
+
+@if(PersonDataList.Any()){
+Console.WriteLine("PersonListNotNull");
+
 <div class="PersonLIst">
     select Person by Id:
 <input type="number" @bind=SearchId>
-<button @onclick=GetDeptById class="btn-primary">GetData</button>
+@* <button @onclick=GetDeptById class="btn-primary">GetData</button> *@
 <br>
     <ListComponent Name="Persons" ItemType="Person" Data="PersonDataList">
 
@@ -266,9 +276,9 @@ select department by Id:
             <th>Name</th>
             <th>Department</th>
             <th>Operation
-                <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
-                <button @onclick=UpdateDepartment class="btn-secondary">Update</button>
-                <button @onclick=DeleteDepartment class="btn-danger">Delete</button>
+                <button @onclick=GetAllPerson class=" btn-success ">RefreshDept</button>
+                @* <button @onclick=UpdateDepartment class="btn-secondary">Update</button> *@
+                @* <button @onclick=DeleteDepartment class="btn-danger">Delete</button> *@
             </th>
             <br>
         </HeadTemplet>
@@ -280,7 +290,7 @@ select department by Id:
             @{//这真的能用吗？
             }
             <td>
-                @{
+                @* @{
                     void select()
                     {
 
@@ -291,7 +301,7 @@ select department by Id:
                         }
                         selectedIdList.Add(context.Id);
                     }//@onclick=select
-                }
+                } *@
                 <input type="checkbox"  />
             </td>
         </RowTemplet>
@@ -303,25 +313,28 @@ select department by Id:
             <td><input type="text" @bind=tempPerson.Name class=" input-group-text"></td>
             <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td>
 
-            <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a Person</button>
+            @* <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a Person</button> *@
         </ContentTemplet>
     </ListComponent>
-</div> *@
-<br>
+</div>
+
+<!-- #endregion -->
+
+}else{
+    <br>
 <button @onclick=GetAllPerson class=" btn-success ">GetAllPerson</button>
+}
 
+
+@using Controller;
 @code{
-    static HttpClient httpclient =new(){
-        BaseAddress=new Uri("http://localhost:5198/"),
-    };
-
     DaoController Dc=new(httpclient);
     //List<int> select
     List<Person> PersonDataList=[];
     Person tempPerson=new();
     async Task GetAllPerson()
     {
-        var a = await Dc.GetAllAsync<Person>();
+        var a = await Dc.GetAllAsync<Person>("Persons");
         if (a is null)
         {
             Console.WriteLine("cant get datalist all,may time out or null database;");
@@ -333,7 +346,7 @@ select department by Id:
     
 }
 
-<!-- #region -->
+<!-- #region other-->
 
 @code {
 

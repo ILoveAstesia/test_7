@@ -1,4 +1,4 @@
-@typeparam ItemType
+ @typeparam ItemType
 
 <PageTitle>@Name</PageTitle>
 
@@ -28,7 +28,7 @@ else
         </tbody>
 
         <tfoot>
-            @ContentTemplet!("This Context Count Has:" + Data.Count())
+            @* @ContentTemplet!(Data.Count().ToString()) *@
         </tfoot>
     </table>
 }
