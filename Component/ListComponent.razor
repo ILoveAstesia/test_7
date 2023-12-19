@@ -6,7 +6,7 @@
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (Data == null)
+@if (DataList == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -19,16 +19,26 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Data!)
-            {
-                <tr>
-                    @RowTemplet!(item)
-                </tr>
+            @if(RowTemplet is not null){
+                @foreach (var item in DataList)
+                {
+                    <tr>
+                        @RowTemplet(item)
+                    </tr>
+                }
+            }else{
+                <p>Null</p>
             }
+
         </tbody>
 
         <tfoot>
-            @* @ContentTemplet!(Data.Count().ToString()) *@
+            @if(ContentTemplet is not null){
+                @ContentTemplet(DataList.Count().ToString())
+            }else{
+                <span>Null Content</span>
+            }
+            
         </tfoot>
     </table>
 }
@@ -36,8 +46,8 @@ else
 @code {
     //[Parameter] public List<int> selectedIdList;
     //public IEnumerable<ItemType>? forcasts;
-    [Parameter] public List<ItemType>? Data { get; set; }
-    [Parameter] public String Name { get; set; } = "Fetching Data From A Service";
+    [Parameter] public List<ItemType>? DataList { get; set; }
+    [Parameter] public String Name { get; set; } = "NoName";
 
     [Parameter] public RenderFragment<String>? ContentTemplet { get; set; }
     [Parameter] public RenderFragment<ItemType>? RowTemplet { get; set; }

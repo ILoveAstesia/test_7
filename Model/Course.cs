@@ -13,7 +13,7 @@ public enum StateType
 public class Course {
 
     public int Id{get;set;}
-    public String Level="";
+    public String Level{get;set;}="";
     public Class CurrentClazz {get;set;} =new();
     public List<Student> PresentStudents {get;set;}=[];
     public DateTime Time{get;set;}

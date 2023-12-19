@@ -29,6 +29,37 @@ public class PersonDAO {
         .OrderByDescending(p => p.Id)
         .ToList();
     }
+    ///DAOs/Persons/Departments/1
+    [HttpGet("Departments/{id}", Name = "PersonGetDeptById")]
+    [ActionName("PersonGetDept1")]
+    public async Task<ActionResult<List<Department>>> GetDeptsByIdAsync(int id){
+        //await _db.Departments.ToListAsync();
+        //
+        Console.WriteLine("Person need to get departments is arrived");
+        // var Persons = await _db.Persons.Where(p => p.Id == id).ToListAsync();
+
+        // var Person =Persons.FirstOrDefault();
+        // if(Person is null){
+        //     Console.WriteLine("Person is null");
+        //     return null;
+        // }
+        return 
+        (await _db.Departments.Where(d=> d.Persons.Any(j => j.Id== id)).ToListAsync())
+        .OrderByDescending(d => d.Id)
+        .ToList();
+    }
+
+    [HttpGet("Courses/{id}", Name = "PersonGetCourseById")]
+    [ActionName("PersonGetCourse1")]
+    public async Task<ActionResult<List<Course>>> GetCoursesByIdAsync(int id){
+
+        Console.WriteLine("Person need to get Courses is arrived");
+
+        return 
+        (await _db.Courses.Where(d=> d.PresentStudents.Any(j => j.Id== id)).ToListAsync())
+        .OrderByDescending(d => d.Id)
+        .ToList();
+    }
 
     
     //

@@ -1,12 +1,32 @@
 ﻿@page "/"
-
+@inject NavigationManager NavigationManager;
+<!-- initialization -->
 @code{
-        static HttpClient httpclient =new(){
+    static HttpClient httpclient =new(){
         BaseAddress=new Uri("http://localhost:5198/"),
     };
+
+    DepartmentController dpc=new(httpclient);
+    DaoController Dc=new(httpclient);
+    String errormsg = "";
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await GetAllDept();
+            //StateHasChanged();
+        }
+        await
+        base.OnAfterRenderAsync(firstRender);
+    }
+    int SearchId;
+    List<Department>? DeptDataList;
+    //List<int> select
+    List<Person> PersonDataList=[];
+    Person tempPerson=new();
 }
 
-<!-- #region -->
+<!-- #region other -->
 @* <ListComponent Name="FoodList!" Data="" ItemType="">
 
 </ListComponent> *@
@@ -88,7 +108,10 @@ select department by Id:
 
 
 <div class="DepartmentList ">
-    <ListComponent Name="Department" ItemType="Department" Data="DataList">
+    @if(DeptDataList is null||DeptDataList.Count==0){
+        <p>Null Or Loding...</p>
+    }else{
+    <ListComponent Name="Department" ItemType="Department" DataList="DeptDataList">
 
         <HeadTemplet>
             <th>OrderNumber</th>
@@ -138,7 +161,7 @@ select department by Id:
         </RowTemplet>
         <ContentTemplet>
 
-            <p>TotalNumber:@DataList!.Count();</p>
+            <p>TotalNumber:@DeptDataList!.Count();</p>
 
             <td><input type="number" @bind=dept!.Id class=" input-group-text"></td>
 
@@ -147,28 +170,16 @@ select department by Id:
             <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a NewDepartment</button>
         </ContentTemplet>
     </ListComponent>
+    }
 </div>
 
-
-@inject NavigationManager NavigationManager;
+<hr>
+<!-- dept code-->
 @code {
     //String? displayPass="未输入";
     //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
     //错误提示信息
-    DepartmentController dpc=new(httpclient);
-    String errormsg = "";
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await GetAllDept();
-            //StateHasChanged();
-        }
-        await
-        base.OnAfterRenderAsync(firstRender);
-    }
-    int SearchId;
-    List<Department>? DataList;
+
     async Task GetDeptById()
     {   //var x = await dpc.GetByIdAsync(SearchId);
        // List<Department> a = await dpc.GetByIdAsync(SearchId);
@@ -178,7 +189,8 @@ select department by Id:
             Console.WriteLine("cant get datalist all,may time out or null database;");
             return;
         }
-        DataList = a;
+        DeptDataList = a;
+        SearchId=0;
         StateHasChanged();
     }
 
@@ -190,7 +202,7 @@ select department by Id:
             Console.WriteLine("cant get datalist all,may time out or null database;");
             return;
         }
-        DataList = a;
+        DeptDataList = a;
         StateHasChanged();
     }
     bool isSubmitting = false;
@@ -215,7 +227,7 @@ select department by Id:
 
     async Task UpdateDepartment()
     {
-        await dpc.UpdateAsync(DataList!);
+        await dpc.UpdateAsync(DeptDataList!);
 
     }
     List<int>? selectedIdList = new();
@@ -261,34 +273,60 @@ select department by Id:
 <!-- #region list code for person-->
 
 @if(PersonDataList.Any()){
-Console.WriteLine("PersonListNotNull");
+//Console.WriteLine("PersonListNotNull");
 
 <div class="PersonLIst">
-    select Person by Id:
+    select Person Property by Id:
 <input type="number" @bind=SearchId>
-@* <button @onclick=GetDeptById class="btn-primary">GetData</button> *@
+<button @onclick="GetOwnDeptAsync" class="btn-primary">GetDeptData</button>
+<button @onclick="GetOwnCourseOrDefaultAsync" class="btn-primary">GetCourseData</button>
 <br>
-    <ListComponent Name="Persons" ItemType="Person" Data="PersonDataList">
+@code{
+    int Pnumber =0;
+}
+    <ListComponent Name="Persons" ItemType="Person" DataList="PersonDataList">
 
         <HeadTemplet>
+            
             <th>OrderNumber</th>
             <th>Id</th>
             <th>Name</th>
             <th>Department</th>
+            <th>Class</th>
             <th>Operation
-                <button @onclick=GetAllPerson class=" btn-success ">RefreshDept</button>
+                <button @onclick=GetAllPersonAsync class=" btn-success ">RefreshDept</button>
                 @* <button @onclick=UpdateDepartment class="btn-secondary">Update</button> *@
                 @* <button @onclick=DeleteDepartment class="btn-danger">Delete</button> *@
             </th>
             <br>
+
         </HeadTemplet>
         <RowTemplet>
-            <td></td>
+            @{var Pnumber = context.GetHashCode();}
+            <td>@Pnumber</td>
             <td>@context.Id</td>
-            <td><input @bind-value=@context.Name></td>
-            <td>@context.Departments</td>
-            @{//这真的能用吗？
+        @if(true){
+            <td>@context.Name</td>
+        }else{
+            @* <td><input @bind-value=@context.Name></td> *@
+        }
+
+            @{//这真的能用吗？取不到dept context.Departments.FirstOrDefault()
+            
+                string alldeptstr="类别：";
+                if(context.Departments.Any()){
+                    foreach(var item in context.Departments ){
+                    alldeptstr+=item;
+                    }
+                }else{
+                    alldeptstr+="空";
+                }
+
+
+
             }
+            <td>@alldeptstr</td>
+
             <td>
                 @* @{
                     void select()
@@ -304,6 +342,7 @@ Console.WriteLine("PersonListNotNull");
                 } *@
                 <input type="checkbox"  />
             </td>
+
         </RowTemplet>
         <ContentTemplet>
 
@@ -311,28 +350,26 @@ Console.WriteLine("PersonListNotNull");
 
             <td><input type="number" @bind=tempPerson!.Id class=" input-group-text"></td>
             <td><input type="text" @bind=tempPerson.Name class=" input-group-text"></td>
-            <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td>
-
-            @* <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a Person</button> *@
+            @* <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td> *@
+            <td><button>add dept</button></td>
+            @* <button @onclick=addPerson disabled=@isSubmitting class=" btn-primary">Add a Person</button> *@
         </ContentTemplet>
     </ListComponent>
 </div>
 
-<!-- #endregion -->
 
 }else{
     <br>
-<button @onclick=GetAllPerson class=" btn-success ">GetAllPerson</button>
+<button @onclick=GetAllPersonAsync class=" btn-success ">GetAllPerson</button>
 }
 
+<!-- #endregion -->
 
+<!-- person code-->
 @using Controller;
 @code{
-    DaoController Dc=new(httpclient);
-    //List<int> select
-    List<Person> PersonDataList=[];
-    Person tempPerson=new();
-    async Task GetAllPerson()
+
+    async Task GetAllPersonAsync()
     {
         var a = await Dc.GetAllAsync<Person>("Persons");
         if (a is null)
@@ -343,8 +380,86 @@ Console.WriteLine("PersonListNotNull");
         PersonDataList = a;
         StateHasChanged();
     }
+
+    async Task GetOwnDeptAsync(){
+        DeptDataList=await Dc.GetOwnPropertyAsync<Department>("Persons/Departments/",SearchId);
+            SearchId=0;
+    }
+    List<Course>? CourseDataList =[];
+    async Task GetOwnCourseOrDefaultAsync(){
+        CourseDataList=await Dc.GetOwnPropertyAsync<Course>("Persons/Courses/",SearchId);
+            SearchId=0;
+    }
     
 }
+
+
+<!-- #region list code for course-->
+
+@if(CourseDataList is not null&&CourseDataList.Any()){
+
+<div class="CourseDataList">
+
+<br>
+
+    <ListComponent Name="Courses" ItemType="Course" DataList="CourseDataList">
+
+        <HeadTemplet>
+            
+            <th>OrderNumber</th>
+            <th>Id</th>
+            <th>Level</th>
+            @* <th>CurrentClazz</th> *@
+            <th>Time</th>
+            <th>State</th>
+            <th>Operation
+                @* <button @onclick=GetAllPersonAsync class=" btn-success ">RefreshDept</button> *@
+                @* <button @onclick=UpdateDepartment class="btn-secondary">Update</button> *@
+                @* <button @onclick=DeleteDepartment class="btn-danger">Delete</button> *@
+            </th>
+            <br>
+
+        </HeadTemplet>
+        <RowTemplet>
+            @{var Pnumber = context.GetHashCode();}
+            <td>@Pnumber</td>
+            <td>@context.Id</td>
+
+        @if(true){
+            <td>@context.Level</td>
+        }else{
+            @* <td><input @bind-value=@context.Name></td> *@
+        }
+
+
+            <td>@context.Time</td>
+            <td>@context.State</td>
+
+            <td>
+                <input type="checkbox"  />
+            </td>
+
+        </RowTemplet>
+        <ContentTemplet>
+
+            <p>TotalNumber:@CourseDataList.Count();</p>
+
+            @* <td><input type="number" @bind=tempPerson!.Id class=" input-group-text"></td> *@
+            @* <td><input type="text" @bind=tempPerson.Name class=" input-group-text"></td> *@
+            @* <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td> *@
+            @* <td><button>add dept</button></td> *@
+            @* <button @onclick=addPerson disabled=@isSubmitting class=" btn-primary">Add a Person</button> *@
+        </ContentTemplet>
+    </ListComponent>
+</div>
+
+}else{
+<p>null or loding...</p>
+}
+
+<!-- #endregion -->
+
+
 
 <!-- #region other-->
 
