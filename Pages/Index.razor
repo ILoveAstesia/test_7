@@ -6,6 +6,9 @@
         BaseAddress=new Uri("http://localhost:5198/"),
     };
 
+    static string Serialize(string[] source) => 
+        System.Net.WebUtility.UrlEncode(System.Text.Json.JsonSerializer.Serialize(source));
+
     DepartmentController dpc=new(httpclient);
     DaoController Dc=new(httpclient);
     String errormsg = "";
@@ -272,15 +275,17 @@ select department by Id:
 
 <!-- #region list code for person-->
 
-@if(PersonDataList.Any()){
-//Console.WriteLine("PersonListNotNull");
 
-<div class="PersonLIst">
     select Person Property by Id:
 <input type="number" @bind=SearchId>
 <button @onclick="GetOwnDeptAsync" class="btn-primary">GetDeptData</button>
-<button @onclick="GetOwnCourseOrDefaultAsync" class="btn-primary">GetCourseData</button>
+<button @onclick="GetOwnCourseOrDefault" class="btn-primary">GetCourseData</button>
 <br>
+
+@if(PersonDataList.Any()){
+//Console.WriteLine("PersonListNotNull");
+<div class="PersonLIst">
+
 @code{
     int Pnumber =0;
 }
@@ -386,78 +391,23 @@ select department by Id:
             SearchId=0;
     }
     List<Course>? CourseDataList =[];
-    async Task GetOwnCourseOrDefaultAsync(){
-        CourseDataList=await Dc.GetOwnPropertyAsync<Course>("Persons/Courses/",SearchId);
+    void GetOwnCourseOrDefault(){
+        
+            //string[] ;
+            //public string[] paramstr => Serialize(CourseDataList); 
+
+
+            NavigationManager.NavigateTo("/StudentCourse/"+SearchId);
             SearchId=0;
+            // return;
+            //https://stackoverflow.com/questions/65644327/how-to-pass-a-list-as-a-parameter-to-blazor-page
+            //https://blog.csdn.net/WarGames_dc/article/details/106213300
     }
+
+
     
 }
 
-
-<!-- #region list code for course-->
-
-@if(CourseDataList is not null&&CourseDataList.Any()){
-
-<div class="CourseDataList">
-
-<br>
-
-    <ListComponent Name="Courses" ItemType="Course" DataList="CourseDataList">
-
-        <HeadTemplet>
-            
-            <th>OrderNumber</th>
-            <th>Id</th>
-            <th>Level</th>
-            @* <th>CurrentClazz</th> *@
-            <th>Time</th>
-            <th>State</th>
-            <th>Operation
-                @* <button @onclick=GetAllPersonAsync class=" btn-success ">RefreshDept</button> *@
-                @* <button @onclick=UpdateDepartment class="btn-secondary">Update</button> *@
-                @* <button @onclick=DeleteDepartment class="btn-danger">Delete</button> *@
-            </th>
-            <br>
-
-        </HeadTemplet>
-        <RowTemplet>
-            @{var Pnumber = context.GetHashCode();}
-            <td>@Pnumber</td>
-            <td>@context.Id</td>
-
-        @if(true){
-            <td>@context.Level</td>
-        }else{
-            @* <td><input @bind-value=@context.Name></td> *@
-        }
-
-
-            <td>@context.Time</td>
-            <td>@context.State</td>
-
-            <td>
-                <input type="checkbox"  />
-            </td>
-
-        </RowTemplet>
-        <ContentTemplet>
-
-            <p>TotalNumber:@CourseDataList.Count();</p>
-
-            @* <td><input type="number" @bind=tempPerson!.Id class=" input-group-text"></td> *@
-            @* <td><input type="text" @bind=tempPerson.Name class=" input-group-text"></td> *@
-            @* <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td> *@
-            @* <td><button>add dept</button></td> *@
-            @* <button @onclick=addPerson disabled=@isSubmitting class=" btn-primary">Add a Person</button> *@
-        </ContentTemplet>
-    </ListComponent>
-</div>
-
-}else{
-<p>null or loding...</p>
-}
-
-<!-- #endregion -->
 
 
 

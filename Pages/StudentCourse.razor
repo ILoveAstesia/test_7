@@ -1,0 +1,99 @@
+@page "/StudentCourse/{Id:int}"
+
+@code{
+
+    [Parameter]
+    public int Id{ get; set; }=0;
+    static HttpClient httpclient =new(){
+    BaseAddress=new Uri("http://localhost:5198/"),
+    };
+    Controller.DaoController Dc=new(httpclient); 
+    //[Parameter]
+    //public String para{ get; set; }="";
+    public List<Course>? CourseDataList{ get; set; }=[];
+    
+    
+    override protected async Task OnAfterRenderAsync(bool firstRender){
+        if(firstRender){
+        int SearchId = Id;
+        CourseDataList=await Dc.GetOwnPropertyAsync<Course>("Persons/Courses/",SearchId); 
+        
+        StateHasChanged();
+        
+        }
+    } 
+   
+
+
+}
+
+
+
+<!-- #region list code for course-->
+
+@if(CourseDataList is not null&&CourseDataList.Any()){
+
+<div class="CourseDataList">
+
+<br>
+
+    <ListComponent Name="Courses" ItemType="Course" DataList="CourseDataList">
+
+        <HeadTemplet>
+            
+            <th>OrderNumber</th>
+            <th>Id</th>
+            <th>Level</th>
+            @* <th>CurrentClazz</th> *@
+            <th>Time</th>
+            <th>State</th>
+            <th>Operation
+                @* <button @onclick=GetAllPersonAsync class=" btn-success ">RefreshDept</button> *@
+                @* <button @onclick=UpdateDepartment class="btn-secondary">Update</button> *@
+                @* <button @onclick=DeleteDepartment class="btn-danger">Delete</button> *@
+            </th>
+            <br>
+
+        </HeadTemplet>
+        <RowTemplet>
+            @{var Pnumber = context.GetHashCode();}
+            <td>@Pnumber</td>
+            <td>@context.Id</td>
+
+        @if(true){
+            <td>@context.Level</td>
+        }else{
+            @* <td><input @bind-value=@context.Name></td> *@
+        }
+
+
+            <td>@context.Time</td>
+            <td>@context.State</td>
+
+            <td>
+                <input type="checkbox"  />
+            </td>
+
+        </RowTemplet>
+        <ContentTemplet>
+
+            <p>TotalNumber:@CourseDataList.Count();</p>
+
+            @* <td><input type="number" @bind=tempPerson!.Id class=" input-group-text"></td> *@
+            @* <td><input type="text" @bind=tempPerson.Name class=" input-group-text"></td> *@
+            @* <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td> *@
+            @* <td><button>add dept</button></td> *@
+            @* <button @onclick=addPerson disabled=@isSubmitting class=" btn-primary">Add a Person</button> *@
+        </ContentTemplet>
+    </ListComponent>
+</div>
+
+}else{
+<p>null or loding...</p>
+}
+
+@inject NavigationManager NavigationManager;
+
+<button @onclick="@(e=>{NavigationManager.NavigateTo("/");})">Return home</button>
+<!-- #endregion -->
+
