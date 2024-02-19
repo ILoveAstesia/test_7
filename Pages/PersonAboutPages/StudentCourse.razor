@@ -94,6 +94,8 @@
 
 @inject NavigationManager NavigationManager;
 
+<button @onclick="@(e=>{NavigationManager.NavigateTo("/Person");})">Back</button>
 <button @onclick="@(e=>{NavigationManager.NavigateTo("/");})">Return home</button>
+
 <!-- #endregion -->
 

@@ -1,7 +1,8 @@
 @page "/departmentPage"
 departmentPage
-
+<!-- #region initializeation -->
 @code{
+
     int SearchId;
     List<Department>? DeptDataList;
     static HttpClient httpclient =new(){
@@ -20,10 +21,14 @@ departmentPage
             await GetAllDept();
             //StateHasChanged();
         }
+
+
         await
         base.OnAfterRenderAsync(firstRender);
     }
+
 }
+<!-- #endregion initializeation -->
 
 @if (errormsg.Any())
 {
@@ -45,7 +50,8 @@ select department by Id:
 
 <div class="DepartmentList ">
     @if(DeptDataList is null||DeptDataList.Count==0){
-        <p>Null Or Loding...</p>
+        <p>Null Or Loding...</p><p>If it is too loon, You can</p>
+        <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
     }else{
     <ListComponent Name="Department" ItemType="Department" DataList="DeptDataList">
 

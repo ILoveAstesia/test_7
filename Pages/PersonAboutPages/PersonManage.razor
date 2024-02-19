@@ -16,7 +16,7 @@ PersonPage
 <div class="PersonLIst">
 
 @code{
-    int Pnumber =0;
+    //int Pnumber =0;
 }
     <ListComponent Name="Persons" ItemType="Person" DataList="PersonDataList">
 
@@ -123,10 +123,11 @@ PersonPage
         StateHasChanged();
     }
 
-    async Task GetOwnDeptAsync(){
+    void GetOwnDeptAsync(){
         @* DeptDataList=await Dc.GetOwnPropertyAsync<Department>("Persons/Departments/",SearchId);
           SearchId=0; 
           *@
+        NavigationManager.NavigateTo("/departmentPage/"+SearchId);
     }
     List<Course>? CourseDataList =[];
     void GetOwnCourseOrDefault(){
