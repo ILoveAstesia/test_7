@@ -1,0 +1,148 @@
+@page "/Person"
+PersonPage
+
+
+<!-- #region list code for person-->
+
+
+    select Person Property by Id:
+<input type="number" @bind=SearchId>
+<button @onclick="GetOwnDeptAsync" class="btn-primary">GetDeptData</button>
+<button @onclick="GetOwnCourseOrDefault" class="btn-primary">GetCourseData</button>
+<br>
+
+@if(PersonDataList.Any()){
+//Console.WriteLine("PersonListNotNull");
+<div class="PersonLIst">
+
+@code{
+    int Pnumber =0;
+}
+    <ListComponent Name="Persons" ItemType="Person" DataList="PersonDataList">
+
+        <HeadTemplet>
+            
+            <th>OrderNumber</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Class</th>
+            <th>Operation
+                <button @onclick=GetAllPersonAsync class=" btn-success ">RefreshDept</button>
+                @* <button @onclick=UpdateDepartment class="btn-secondary">Update</button> *@
+                @* <button @onclick=DeleteDepartment class="btn-danger">Delete</button> *@
+            </th>
+            <br>
+
+        </HeadTemplet>
+        <RowTemplet>
+            @{var Pnumber = context.GetHashCode();}
+            <td>@Pnumber</td>
+            <td>@context.Id</td>
+        @if(true){
+            <td>@context.Name</td>
+        }else{
+            @* <td><input @bind-value=@context.Name></td> *@
+        }
+
+            @{//这真的能用吗？取不到dept context.Departments.FirstOrDefault()
+            
+                string alldeptstr="类别：";
+                if(context.Departments.Any()){
+                    foreach(var item in context.Departments ){
+                    alldeptstr+=item;
+                    }
+                }else{
+                    alldeptstr+="空";
+                }
+
+
+
+            }
+            <td>@alldeptstr</td>
+
+            <td>
+                @* @{
+                    void select()
+                    {
+
+                        if (selectedIdList!.Contains(context.Id))
+                        {
+                            selectedIdList.Remove(context.Id);
+                            return;
+                        }
+                        selectedIdList.Add(context.Id);
+                    }//@onclick=select
+                } *@
+                <input type="checkbox"  />
+            </td>
+
+        </RowTemplet>
+        <ContentTemplet>
+
+            <p>TotalNumber:@PersonDataList!.Count();</p>
+
+            <td><input type="number" @bind=tempPerson!.Id class=" input-group-text"></td>
+            <td><input type="text" @bind=tempPerson.Name class=" input-group-text"></td>
+            @* <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td> *@
+            <td><button>add dept</button></td>
+            @* <button @onclick=addPerson disabled=@isSubmitting class=" btn-primary">Add a Person</button> *@
+        </ContentTemplet>
+    </ListComponent>
+</div>
+
+
+}else{
+    <br>
+<button @onclick=GetAllPersonAsync class=" btn-success ">GetAllPerson</button>
+}
+
+<!-- #endregion -->
+@inject NavigationManager NavigationManager;
+<!-- person code-->
+@using Controller;
+@code{
+    int SearchId=0;
+    List<Person> PersonDataList=[];
+    Person tempPerson=new();
+    
+    public static HttpClient httpclient =new(){
+        BaseAddress=new Uri("http://localhost:5198/"),
+    };
+    DaoController Dc=new(httpclient);
+
+    async Task GetAllPersonAsync()
+    {
+        var a = await Dc.GetAllAsync<Person>("Persons");
+        if (a is null)
+        {
+            Console.WriteLine("cant get datalist all,may time out or null database;");
+            return;
+        }
+        PersonDataList = a;
+        StateHasChanged();
+    }
+
+    async Task GetOwnDeptAsync(){
+        @* DeptDataList=await Dc.GetOwnPropertyAsync<Department>("Persons/Departments/",SearchId);
+          SearchId=0; 
+          *@
+    }
+    List<Course>? CourseDataList =[];
+    void GetOwnCourseOrDefault(){
+        
+            //string[] ;
+            //public string[] paramstr => Serialize(CourseDataList); 
+
+
+            NavigationManager.NavigateTo("/StudentCourse/"+SearchId);
+            SearchId=0;
+            // return;
+            //https://stackoverflow.com/questions/65644327/how-to-pass-a-list-as-a-parameter-to-blazor-page
+            //https://blog.csdn.net/WarGames_dc/article/details/106213300
+    }
+
+
+    
+}
+

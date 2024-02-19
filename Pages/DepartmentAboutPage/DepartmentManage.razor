@@ -159,12 +159,13 @@ select department by Id:
         Thread.Sleep(1000);
         isSubmitting = false;
         //await GetAllDept();
-        NavigationManager.NavigateTo("/", true);//refresh
+        NavigationManager.NavigateTo("/departmentPage", true);//refresh
     }
 
     async Task UpdateDepartment()
     {
         await dpc.UpdateAsync(DeptDataList!);
+        NavigationManager.NavigateTo("/departmentPage", true);//refresh
 
     }
     List<int>? selectedIdList = new();
@@ -194,7 +195,7 @@ select department by Id:
         await dpc.DeleteAsync(selectedIdList);
         selectedIdList = new();
         //await GetAllDept();
-        NavigationManager.NavigateTo("/", true);//refresh
+        NavigationManager.NavigateTo("/departmentPage", true);//refresh
                                                 //StateHasChanged();
     }
 
