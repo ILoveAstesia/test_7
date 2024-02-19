@@ -1,0 +1,208 @@
+@page "/departmentPage"
+departmentPage
+
+@code{
+    int SearchId;
+    List<Department>? DeptDataList;
+    static HttpClient httpclient =new(){
+    BaseAddress=new Uri("http://localhost:5198/"),
+    };
+    String errormsg = "";
+    @* static string Serialize(string[] source) => 
+        System.Net.WebUtility.UrlEncode(System.Text.Json.JsonSerializer.Serialize(source)); *@
+
+    Controller.DepartmentController dpc=new(httpclient);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await GetAllDept();
+            //StateHasChanged();
+        }
+        await
+        base.OnAfterRenderAsync(firstRender);
+    }
+}
+
+@if (errormsg.Any())
+{
+    //=new DateTime(2023,12,8,16,30,00);
+    //"2023/12/6 18:30:00";
+    errormsg+=DateTime.Now.ToShortDateString();
+    <div>
+        <p class=" bg-danger text-warning  p-3  w-70   ">@errormsg</p>
+        <button @onclick="@(e=> errormsg="")" class=" btn-close "></button>
+    </div>
+}
+
+
+select department by Id:
+<input type="number" @bind=SearchId>
+<button @onclick=GetDeptById class="btn-primary">GetData</button>
+<br>
+
+
+<div class="DepartmentList ">
+    @if(DeptDataList is null||DeptDataList.Count==0){
+        <p>Null Or Loding...</p>
+    }else{
+    <ListComponent Name="Department" ItemType="Department" DataList="DeptDataList">
+
+        <HeadTemplet>
+            <th>OrderNumber</th>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Operation
+                <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
+                <button @onclick=UpdateDepartment class="btn-secondary">Update</button>
+                @* @{
+                bool notContains =false;
+
+                if(selectedIdList is not null){
+                notContains=!selectedIdList.Any();
+                return;
+                }
+
+                disabled=@notContains
+                } *@
+                <button @onclick=DeleteDepartment class="btn-danger">Delete</button>
+
+            </th>
+            <br>
+
+        </HeadTemplet>
+        <RowTemplet>
+            <td></td>
+            <td>@context.Id</td>
+            <td><input @bind-value=@context.Name></td>
+            <td>
+                @{
+                    void select()
+                    {
+
+                        if (selectedIdList!.Contains(context.Id))
+                        {
+                            selectedIdList.Remove(context.Id);
+                            return;
+                        }
+                        selectedIdList.Add(context.Id);
+                    }
+                }
+                <input type="checkbox" @onclick=select />
+                @* <button class=" disabled " disabled="true" @onclick="@(
+                e=> dpc.DeleteAsync(context.Id)
+                )">Delete</button> *@
+            </td>
+        </RowTemplet>
+        <ContentTemplet>
+
+            <p>TotalNumber:@DeptDataList!.Count();</p>
+
+            <td><input type="number" @bind=dept!.Id class=" input-group-text"></td>
+
+            <td><input type="text" @bind=dept.Name class=" input-group-text"></td>
+
+            <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a NewDepartment</button>
+        </ContentTemplet>
+    </ListComponent>
+    }
+</div>
+
+<hr>
+<!-- dept code-->
+@inject NavigationManager NavigationManager;
+@code {
+    //String? displayPass="未输入";
+    //以下的方法都可以变成模板，都可以重复使用，需要封装到方法里？
+    //错误提示信息
+
+    async Task GetDeptById()
+    {   //var x = await dpc.GetByIdAsync(SearchId);
+       // List<Department> a = await dpc.GetByIdAsync(SearchId);
+        List<Department>? a= await dpc.GetByIdAsync(SearchId);
+        if (a is null)
+        {
+            Console.WriteLine("cant get datalist all,may time out or null database;");
+            return;
+        }
+        DeptDataList = a;
+        SearchId=0;
+        StateHasChanged();
+    }
+
+    async Task GetAllDept()
+    {
+        var a = await dpc.GetAllAsync();
+        if (a is null)
+        {
+            Console.WriteLine("cant get datalist all,may time out or null database;");
+            return;
+        }
+        DeptDataList = a;
+        StateHasChanged();
+    }
+    bool isSubmitting = false;
+    Department? dept = new();
+    //[System.ComponentModel.DataAnnotations.Required]
+    //int newId;
+    //String newName="newDepartmentName";
+    async Task addDepartment()
+    {
+        if (dept is null)
+        {
+            Console.WriteLine("Input value is null please reEnter");
+            return;
+        }
+        isSubmitting = true;
+        await dpc.AddAsync(dept);
+        Thread.Sleep(1000);
+        isSubmitting = false;
+        //await GetAllDept();
+        NavigationManager.NavigateTo("/", true);//refresh
+    }
+
+    async Task UpdateDepartment()
+    {
+        await dpc.UpdateAsync(DeptDataList!);
+
+    }
+    List<int>? selectedIdList = new();
+
+    async Task DeleteDepartment()
+    {
+        //如果没有被选中 不应该让按钮生效
+        if (selectedIdList is null)
+        {
+            Console.WriteLine("cant null delete");
+            errormsg += "cant null delete";
+            return;
+        }
+
+        if (!selectedIdList.Any())
+        {
+            Console.WriteLine("cant null delete");
+            errormsg += "cant null delete";
+            return;
+        }
+
+        foreach (var i in selectedIdList)
+        {
+            Console.WriteLine(i.ToString());
+        }
+        @* return; *@
+        await dpc.DeleteAsync(selectedIdList);
+        selectedIdList = new();
+        //await GetAllDept();
+        NavigationManager.NavigateTo("/", true);//refresh
+                                                //StateHasChanged();
+    }
+
+    @* void UpdateDepartment(){
+
+//await dpc.UpdateAsync(DataList!);
+//Console.WriteLine("Keypress");
+//await dpc.Update(DataList);
+} *@
+
+}

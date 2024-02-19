@@ -2,7 +2,8 @@
 @inject NavigationManager NavigationManager;
 <!-- initialization -->
 @code{
-    static HttpClient httpclient =new(){
+    
+    public static HttpClient httpclient =new(){
         BaseAddress=new Uri("http://localhost:5198/"),
     };
 
