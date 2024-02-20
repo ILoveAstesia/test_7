@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using test_7.Data;
+using test_7.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+//AppState store
+builder.Services.AddScoped<Accountinfo>();
 
 //builder.Services.AddSingleton<WeatherForecastService>();
 //builder.Services.AddSingleton<DepartmentService>();

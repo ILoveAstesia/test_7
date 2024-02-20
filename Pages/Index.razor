@@ -14,6 +14,39 @@
 樊志安  [已签到]
 罗维    [Null]
 徐昌坤  [NoPlan]
+@if(Signed==true){
+<span>
+     @name：到达时间 @signlogtem.Arrive ;
+     <button @onclick="PersonExit">check out</button>
+</span>
+}else{
+<button @onclick="PersonArrived">check in</button>
+}
+
+@code{
+    bool Exitalert=false;
+    string name="樊志安";
+    int Personid=3;
+    bool Signed=false;
+    SignLog signlogtem {get;set;}=new();
+        
+    void PersonArrived(){
+        Signed=true;
+
+        signlogtem.Id=DateTime.Now.Year+DateTime.Now.Month+DateTime.Now.Day;
+        signlogtem.PersonId=Personid;
+        signlogtem.Arrive=DateTime.Now;
+        //2024/2/20 22:37:23
+        
+        //signlogtem.Exit=new DateTime(2023,12,8,16,30,00);
+    }
+    void PersonExit(){
+        //Signed=true;
+        Exitalert=true;
+        signlogtem.Exit=DateTime.Now;
+    }
+
+}
 
 
 <button>Sign</button>
