@@ -10,7 +10,9 @@
     string log = "logined";
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await ProtectedSessionStore.SetAsync("LoginState", log);
+        await GETsessionvalue();
+        StateHasChanged();
+        //await ProtectedSessionStore.SetAsync("LoginState", log);
         //return base.OnAfterRenderAsync(firstRender);
     }
     string LoginStatetem="";   
@@ -18,12 +20,16 @@
     async Task Login(){
         await ProtectedSessionStore.SetAsync("LoginState", log);
 
+        await GETsessionvalue();
+
+        StateHasChanged();
+    }
+
+    async Task GETsessionvalue(){
         var result=await ProtectedSessionStore.GetAsync<string>("LoginState");
         if(result.Success==true&&result.Value is not null){
             LoginStatetem=result.Value;
         }
-
-        StateHasChanged();
     }
 
 }
