@@ -1,5 +1,8 @@
 ﻿@page "/"
 
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
 二月
 樊志安  22/31
 罗维    30/31
@@ -14,25 +17,42 @@
 樊志安  [已签到]
 罗维    [Null]
 徐昌坤  [NoPlan]
-@if(Signed==true){
-<span>
-     @name：到达时间 @signlogtem.Arrive ;
-     <button @onclick="PersonExit">check out</button>
-</span>
-}else{
-<button @onclick="PersonArrived">check in</button>
+
+<span>LoginStatetem:@LoginStatetem
+@if(LoginStatetem=="logined"){
+    @if(Signed==true){
+        <span>
+            @name：到达时间 @signlogtem.Arrive ;
+            <button @onclick="PersonExit">check out</button>
+        </span>
+    }else{
+        <button @onclick="PersonArrived">check in</button>
+    }
 }
+</span>
+
+
 
 @code{
+    
     bool Exitalert=false;
     string name="樊志安";
     int Personid=3;
     bool Signed=false;
     SignLog signlogtem {get;set;}=new();
-        
+    string LoginStatetem="false";
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var result=await ProtectedSessionStore.GetAsync<string>("LoginState");
+        if(result.Success==true&&result.Value is not null){
+            LoginStatetem=result.Value;
+        }
+        //=result.Success ? result.Value : "false";
+        //return base.OnAfterRenderAsync(firstRender);
+    }
     void PersonArrived(){
         Signed=true;
-
+        
         signlogtem.Id=DateTime.Now.Year+DateTime.Now.Month+DateTime.Now.Day;
         signlogtem.PersonId=Personid;
         signlogtem.Arrive=DateTime.Now;

@@ -12,7 +12,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 //AppState store
-builder.Services.AddScoped<Accountinfo>();
+//builder.Services.AddScoped<Accountinfo>();
+builder.Services.AddSingleton<Accountinfo>();
 
 //builder.Services.AddSingleton<WeatherForecastService>();
 //builder.Services.AddSingleton<DepartmentService>();
