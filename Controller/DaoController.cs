@@ -2,31 +2,38 @@ namespace test_7.Controller;
 
 public class DaoController
 {
-
     //readonly string apiAddress ="http://localhost:5198/" apiAddress +;
-    readonly HttpClient _httpClient ;
-    readonly Uri apiuri;
+    readonly IHttpClientFactory _httpClient ;
+    readonly HttpClient Client;
+    readonly String apiurl;
+    public DaoController(IHttpClientFactory httpClient){
 
-    public DaoController(HttpClient httpClient){
-        _httpClient=httpClient;
-        if(_httpClient.BaseAddress is null){
+        _httpClient= httpClient;
+
+        Client = _httpClient.CreateClient("client_1"); 
+
+        if(Client.BaseAddress is null){
         Console.WriteLine("HttpClient Uri is null");
         Environment.Exit(0);
         }
-        apiuri=_httpClient.BaseAddress;
+        
+        apiurl = Client.BaseAddress.ToString();
+        //apiuri=_httpClient.BaseAddress;
+        
         return ;
         //return ;
     }
     
     public async Task<List<T>?> GetAllAsync<T>()where T:class
     {
+        //var Client = _httpClient.CreateClient("client_1"); 
         // test_7Context db=new();
         // DataAccessObject dao=new(db);
         // return await dao.GetAllAsync<T>();
         var a =typeof(T);
-        Console.WriteLine(_httpClient.BaseAddress+"DAOs/"+a.ToString());
+        Console.WriteLine(Client.BaseAddress+"DAOs/"+a.ToString());
         //T.toString();
-        return await _httpClient.GetFromJsonAsync<List<T>>( _httpClient.BaseAddress+"DAOs/"+a.ToString());
+        return await Client.GetFromJsonAsync<List<T>>( apiurl+"DAOs/"+a.ToString());
        
 
     }
@@ -35,15 +42,15 @@ public class DaoController
     {
         
         //var a =typeof(T);
-        Console.WriteLine(apiuri+"DAOs/"+page);
+        Console.WriteLine(apiurl+"DAOs/"+page);
         //T.toString();
-        return await _httpClient.GetFromJsonAsync<List<T>>( apiuri+"DAOs/"+page);
+        return await Client.GetFromJsonAsync<List<T>>( apiurl+"DAOs/"+page);
        
     }
 
     public async Task<List<T>?> GetOwnPropertyAsync<T>(string PropertyPage,int id)where T:class{
-        Console.WriteLine(apiuri+"DAOs/"+PropertyPage+id);
-        return await _httpClient.GetFromJsonAsync<List<T>>( apiuri+"DAOs/"+PropertyPage+id);
+        Console.WriteLine(apiurl+"DAOs/"+PropertyPage+id);
+        return await Client.GetFromJsonAsync<List<T>>( apiurl+"DAOs/"+PropertyPage+id);
     }
 
     

@@ -8,95 +8,109 @@ public static class SeedData
     public static void Initialize(test_7Context db)
     {
 
-        var par = new Department(){
-            Id=1000,
-            Name="家长",
+        var par = new Department()
+        {
+            Id = 1000,
+            Name = "家长",
         };
 
-        var stu = new Department(){
-            Id=1001,
-            Name="学生",
+        var stu = new Department()
+        {
+            Id = 1001,
+            Name = "学生",
         };
 
-        var tch =new Department(){
-            Id=0001,
-            Name="老师",
+        var tch = new Department()
+        {
+            Id = 0001,
+            Name = "老师",
         };
 
-        var teacher1 = new Teacher(){
-            Id=1,
+        var teacher1 = new Teacher()
+        {
+            Id = 1,
             Name = "刘",
-            };
 
-        var teacher2 = new Teacher(){
-            Id=2,
+        };
+
+        var teacher2 = new Teacher()
+        {
+            Id = 2,
             Name = "徐",
-            };
+        };
 
-        var teacher3 = new Teacher(){
-            Id=3,
+        var teacher3 = new Teacher()
+        {
+            Id = 3,
             Name = "罗",
-            };
+        };
 
-        var stu1 = new Student(){
-            Id=4,
+        var stu1 = new Student()
+        {
+            Id = 4,
             Name = "可乐",
-            };
+        };
 
-        var stu2 = new Student(){
-            Id=5,
+        var stu2 = new Student()
+        {
+            Id = 5,
             Name = "桃桃",
-            };
+        };
 
-        var stu3 = new Student(){
-            Id=6,
+        var stu3 = new Student()
+        {
+            Id = 6,
             Name = "洋洋",
-            };
+        };
 
-        var par1 = new Person(){
-            Id=7,
+        var par1 = new Person()
+        {
+            Id = 7,
             Name = "可乐妈",
-            };
+        };
 
-        var par2 = new Person(){
-            Id=8,
+        var par2 = new Person()
+        {
+            Id = 8,
             Name = "可乐爸",
         };
 
         //List<Person> parl=person7,person8;
 
-        Teacher[] teachers=[
+        Teacher[] teachers = [
             teacher1,
             teacher2,
             teacher3,
         ];
 
-        Person[] parents=[
+        Person[] parents = [
             par1,
             par2,
         ];
 
-        Student[] stus=[
+        Student[] stus = [
             stu1,
             stu2,
             stu3,
         ];
 
-        Class clazz1 = new(){
-            Id=1,
-            Name="编程班",
+        Class clazz1 = new()
+        {
+            Id = 1,
+            Name = "编程班",
             //Date=DateTime.Now.AddDays(3)
-            Date="星期二",
+            Date = "星期二",
         };
-   
-        Class clazz2 = new(){
-            Id=2,
-            Name="无人机班",
-            Date="星期天",//如何拼接两段时间对象，日期和时间
+
+        Class clazz2 = new()
+        {
+            Id = 2,
+            Name = "无人机班",
+            Date = "星期天",//如何拼接两段时间对象，日期和时间
         };
-        
-        
-        
+
+
+
         //par.Persons.Add(person7,person8);
         par.Persons.AddRange(parents);
         tch.Persons.AddRange(teachers);
@@ -113,26 +127,28 @@ public static class SeedData
 
 
         //db.Persons.AddRange(person);
-        db.Departments.AddRange(par,stu,tch);
-        db.Clazzs.AddRange(clazz1,clazz2);
+        db.Departments.AddRange(par, stu, tch);
+        db.Clazzs.AddRange(clazz1, clazz2);
 
 
-        Course course1=new(){
-            Id=1,
-            CurrentClazz=clazz1,
-            Level="1A-1",
-            Time=new DateTime(2710,12,9,14,00,00),
-            State=Teached,
-            PresentStudents=clazz1.Students,
+        Course course1 = new()
+        {
+            Id = 1,
+            CurrentClazz = clazz1,
+            Level = "1A-1",
+            Time = new DateTime(2710, 12, 9, 14, 00, 00),
+            State = Teached,
+            PresentStudents = clazz1.Students,
         };
 
 
-        Course course2=new(){
-            Id=2,
-            Level="1A-2",
-            CurrentClazz=clazz1,
-            Time=new DateTime(2710,12,9,14,00,00).AddDays(7),
-            State=Teaching,
+        Course course2 = new()
+        {
+            Id = 2,
+            Level = "1A-2",
+            CurrentClazz = clazz1,
+            Time = new DateTime(2710, 12, 9, 14, 00, 00).AddDays(7),
+            State = Teaching,
             //PresentStudents=clazz1.Students,
         };
         //未到
@@ -140,24 +156,81 @@ public static class SeedData
         course2.PresentStudents.Remove(stu3);
 
         //没到
-        Course course3=new(){
-            Id=3,
-            Level="1A-3",
-            CurrentClazz=clazz1,
-            Time=new DateTime(2710,12,9,14,00,00).AddDays(7*2),
-            State=Opening,
+        Course course3 = new()
+        {
+            Id = 3,
+            Level = "1A-3",
+            CurrentClazz = clazz1,
+            Time = new DateTime(2710, 12, 9, 14, 00, 00).AddDays(7 * 2),
+            State = Opening,
         };
 
-        Course course0=new(){
-            Id=4,
-            Level="2B-5",
-            CurrentClazz=clazz2,
-            Time=new DateTime(2023,12,9,14,00,00),
-            State=Teached,
-            PresentStudents=clazz2.Students,
+        Course course0 = new()
+        {
+            Id = 4,
+            Level = "2B-5",
+            CurrentClazz = clazz2,
+            Time = new DateTime(2023, 12, 9, 14, 00, 00),
+            State = Teached,
+            PresentStudents = clazz2.Students,
         };
 
-        db.Courses.AddRange(course0,course1,course2,course3);
+        db.Courses.AddRange(course0, course1, course2, course3);
+
+        Accountinfo accountinfo1 = new()
+        {
+            Id = 1,
+            Password = "lq1",
+            Right = 2,
+        };
+
+        Accountinfo accountinfo2 = new()
+        {
+            Id = 2,
+            Password = "xck2",
+            Right = 2,
+        };
+
+        Accountinfo accountinfo3 = new()
+        {
+            Id = 3,
+            Password = "lw3",
+            Right = 2,
+        };
+
+
+        Accountinfo accountinfo0 = new()
+        {
+            Id = -2,
+            Password = "fza-2",
+            Right = 3,
+        };
+        
+        Accountinfo accountinfoSuperAdmin = new()
+        {
+            Id = -1,
+            Password = "Astesia-1",
+            Right = 4,
+        };
+
+        
+
+
+        Person admin = new(){
+            Id=-2,
+            Name="樊志安",
+
+        };
+
+        Person SuperAdmin = new(){
+            Id=-1,
+            Name="Astesia",
+
+        };
+
+        db.Persons.AddRange(admin,SuperAdmin);
+        db.Accountinfos.AddRange(accountinfoSuperAdmin,accountinfo0,accountinfo1,accountinfo2,accountinfo3);
+        //db.Accountinfos.AddRange(accountinfoSuperAdmin,accountinfo0,accountinfo1);
 
         db.SaveChanges();
     }

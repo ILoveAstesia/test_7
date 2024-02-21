@@ -1,0 +1,91 @@
+@page "/Login/{Id:int}"
+@inject Accountinfo LoginState
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+@code{
+    [Parameter]
+    public int Id {get;set;} =-1;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await GetSessionValue();
+        StateHasChanged();
+        //await ProtectedSessionStore.SetAsync("LoginState", log);
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+    bool LoginStatetem=false;   
+    //LoginState
+
+    async Task GetSessionValue(){
+        var result=await ProtectedSessionStore.GetAsync<bool>("LoginState");
+        if(result.Success==true){
+            LoginStatetem=result.Value;
+        }
+    }
+    string errormsg="";
+}
+
+<h1>LoginPage @LoginStatetem</h1>:@Id 
+<br />
+@if (errormsg.Any())
+{
+    //=new DateTime(2023,12,8,16,30,00);
+    //"2023/12/6 18:30:00";
+    //errormsg+=DateTime.Now.ToShortDateString();
+    <div>
+        <p class=" bg-danger text-warning  p-3  w-70   ">@errormsg</p>
+        <button @onclick="@(e=> errormsg="")" class=" btn-close "></button>
+    </div>
+}
+<br />
+ <span>
+AccountId:
+<br />
+<InputNumber TValue="Int32" @bind-Value=accountid>
+</InputNumber>
+ </span>
+ <br />
+ <span>
+AccountPassword:
+<br />
+<InputText  @bind-Value=accountpsw>
+</InputText>
+ </span>
+<br />
+
+@if(LoginStatetem==true){
+<button @onclick="Logout" >Log out</button>
+}else{
+<button @onclick="Login" >Login</button>
+
+}
+
+@code{
+    int accountid;
+    string accountpsw="";
+    //string log = "true";
+    async Task Login(){
+        if(accountpsw!="psw"){
+            errormsg="password or id not right" ;
+            //await ProtectedSessionStore.SetAsync("LoginState", false);
+            return;
+        }
+        //log = "true";
+        await ProtectedSessionStore.SetAsync("LoginState", true);
+        //无法确保输入正确的值
+        await GetSessionValue();
+
+        StateHasChanged();
+    }
+    async Task Logout(){
+        //log="false";
+        await ProtectedSessionStore.SetAsync("LoginState", false);
+        StateHasChanged();
+    }
+
+    void GetPswFromDbById(){
+        return;
+    }
+}

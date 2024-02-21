@@ -1,0 +1,16 @@
+
+
+@if (errormsg.Any())
+{
+    //=new DateTime(2023,12,8,16,30,00);
+    //"2023/12/6 18:30:00";
+    //errormsg+=DateTime.Now.ToShortDateString();
+    <div>
+        <p class=" bg-danger text-warning  p-3  w-70   ">@errormsg</p>
+        <button @onclick="@(e=> errormsg="")" class=" btn-close "></button>
+    </div>
+}
+
+@code{
+    [Parameter] public string errormsg { get; set; } ="";
+}

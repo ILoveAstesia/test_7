@@ -73,6 +73,7 @@ public class test_7Context : DbContext
     public DbSet<Department> Departments { get; set; }
     public DbSet<Class> Clazzs { get; set; }
     public DbSet<Course> Courses { get; set; }
+    public DbSet<Accountinfo> Accountinfos { get; set; }
     //public DbSet<DepartmentPerson> DepartmentPersons { get; set; }
     /**
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,6 +1,9 @@
 @page "/Person"
 PersonPage
-
+@* @inject string strurl *@
+@* @using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration 
+<h1>@Configuration["APIurl"]</h1> *@
 
 <!-- #region list code for person-->
 
@@ -101,18 +104,35 @@ PersonPage
 @inject NavigationManager NavigationManager;
 <!-- person code-->
 @using Controller;
+
+@inject IHttpClientFactory _httpClient;
+
 @code{
+    DaoController Dc;
+    @* PersonManage(){
+        Dc=new(_httpClient);
+    } *@
     int SearchId=0;
     List<Person> PersonDataList=[];
     Person tempPerson=new();
-    
-    public static HttpClient httpclient =new(){
-        BaseAddress=new Uri("http://localhost:5198/"),
-    };
-    DaoController Dc=new(httpclient);
+    @* string? text ="" ;
+    protected override void OnInitialized(){
+        text=Configuration["APIurl"];
+        if(text is null){
+            return;
+        } 
+        httpclient.BaseAddress=new Uri(text);
+    } *@
 
+    //private readonly IHttpClientFactory _httpClient;
+    @* public static HttpClient httpclient =new()
+    {
+        BaseAddress=new Uri("http://localhost:5198/"),
+    }; *@
+    
     async Task GetAllPersonAsync()
     {
+        Dc=new(_httpClient);
         var a = await Dc.GetAllAsync<Person>("Persons");
         if (a is null)
         {
@@ -133,8 +153,7 @@ PersonPage
     void GetOwnCourseOrDefault(){
         
             //string[] ;
-            //public string[] paramstr => Serialize(CourseDataList); 
-
+            //public string[] paramstr => Serialize(CourseDataList);
 
             NavigationManager.NavigateTo("/StudentCourse/"+SearchId);
             SearchId=0;

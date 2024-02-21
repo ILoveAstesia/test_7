@@ -2,7 +2,8 @@
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
-
+@* @inject String str
+<h1>@str</h1> *@
 二月
 樊志安  22/31
 罗维    30/31
@@ -18,8 +19,8 @@
 罗维    [Null]
 徐昌坤  [NoPlan]
 
-<span>LoginStatetem:@LoginStatetem
-@if(LoginStatetem=="logined"){
+<span>LoginStatetem:@LoginStatetem.ToString();
+@if(LoginStatetem==true){
     @if(Signed==true){
         <span>
             @name：到达时间 @signlogtem.Arrive ;
@@ -35,16 +36,16 @@
 
 @code{
     
-    bool Exitalert=false;
+    @* bool Exitalert=false; *@
     string name="樊志安";
     int Personid=3;
     bool Signed=false;
     SignLog signlogtem {get;set;}=new();
-    string LoginStatetem="false";
+    bool LoginStatetem=false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var result=await ProtectedSessionStore.GetAsync<string>("LoginState");
-        if(result.Success==true&&result.Value is not null){
+        var result=await ProtectedSessionStore.GetAsync<bool>("LoginState");
+        if(result.Success==true){
             LoginStatetem=result.Value;
         }
 
@@ -64,12 +65,12 @@
     }
     void PersonExit(){
         //Signed=true;
-        Exitalert=true;
+        //Exitalert=true;
         signlogtem.Exit=DateTime.Now;
     }
 
 }
 
-
+@* 
 <button>Sign</button>
-<button>Sign in</button>
+<button>Sign in</button> *@

@@ -7,13 +7,23 @@ using test_7.Model;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddHttpClient();
+//builder.Services.AddHttpClient("http://localhost:5198/");
+
+builder.Services.AddHttpClient("client_1",config=>  //这里指定的name=client_1，可以方便我们后期服用该实例
+    {//https://www.jianshu.com/p/732aee097c6b
+        config.BaseAddress= new Uri("http://localhost:5198/");
+        config.DefaultRequestHeaders.Add("header_1","header_1");
+    });
+
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 //AppState store
 //builder.Services.AddScoped<Accountinfo>();
+
+
 builder.Services.AddSingleton<Accountinfo>();
+//builder.Services.AddSingleton<string>("http://localhost:5198/");
 
 //builder.Services.AddSingleton<WeatherForecastService>();
 //builder.Services.AddSingleton<DepartmentService>();

@@ -1,13 +1,18 @@
 @page "/StudentCourse/{Id:int}"
-
+@inject IHttpClientFactory httpClient;
 @code{
 
     [Parameter]
     public int Id{ get; set; }=0;
-    static HttpClient httpclient =new(){
+    @* static HttpClient httpclient =new(){
     BaseAddress=new Uri("http://localhost:5198/"),
-    };
-    Controller.DaoController Dc=new(httpclient); 
+    }; *@
+    Controller.DaoController Dc; 
+    
+    @* StudentCourse(){
+        //_httpClient=httpClient;
+        Dc=new(httpClient);
+    } *@
     //[Parameter]
     //public String para{ get; set; }="";
     public List<Course>? CourseDataList{ get; set; }=[];
@@ -16,6 +21,7 @@
     override protected async Task OnAfterRenderAsync(bool firstRender){
         if(firstRender){
         int SearchId = Id;
+        Dc=new(httpClient);
         CourseDataList=await Dc.GetOwnPropertyAsync<Course>("Persons/Courses/",SearchId); 
         
         StateHasChanged();
