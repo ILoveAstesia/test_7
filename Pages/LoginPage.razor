@@ -1,15 +1,20 @@
 @page "/Login/{Id:int}"
 @inject Accountinfo LoginState
-
+@inject IHttpClientFactory httpcient
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
 
 @code{
     [Parameter]
-    public int Id {get;set;} =-1;
-    
+    public int Id {get;set;} =-2;
+    public Controller.DaoController? Dc;
+    protected override void OnInitialized(){
+        Dc=new(httpcient);
+        return;
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+
         await GetSessionValue();
         StateHasChanged();
         //await ProtectedSessionStore.SetAsync("LoginState", log);
@@ -63,11 +68,15 @@ AccountPassword:
 }
 
 @code{
-    int accountid;
-    string accountpsw="";
+    int accountid=-2;
+    string accountpsw="fza";
     //string log = "true";
     async Task Login(){
-        if(accountpsw!="psw"){
+        Console.WriteLine("2");
+        errormsg=await GetPswFromDbById(accountid);
+        //accountpsw=errormsg;
+        Console.WriteLine("5");
+        if(accountpsw!=errormsg){
             errormsg="password or id not right" ;
             //await ProtectedSessionStore.SetAsync("LoginState", false);
             return;
@@ -85,7 +94,21 @@ AccountPassword:
         StateHasChanged();
     }
 
-    void GetPswFromDbById(){
-        return;
+    async Task<string>  GetPswFromDbById(int Id){
+        Console.WriteLine("3");
+        var task=await Dc!.GetOneOwnPropertyAsync<string>("Accountinfos/Passwords",Id);
+        if (task is null){
+            return errormsg="task psw is null";
+        }
+        Console.WriteLine("4");
+        //GetOwnPropertyAsync
+        @* if(task.FirstOrDefault<string>()){
+        } *@
+        @* var a = task;
+            if (a is null){
+                return errormsg="First psw is null";
+            } *@
+        return task;  
+        //return "";
     }
 }
