@@ -1,15 +1,16 @@
 @page "/Login/{Id:int}"
-@inject Accountinfo LoginState
+@* @inject Accountinfo LoginState *@
 @inject IHttpClientFactory httpcient
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
 
-@code{
+@code {
     [Parameter]
-    public int Id {get;set;} =-2;
+    public int Id { get; set; } = 0;
     public Controller.DaoController? Dc;
-    protected override void OnInitialized(){
-        Dc=new(httpcient);
+    protected override void OnInitialized()
+    {
+        Dc = new(httpcient);
         return;
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -20,19 +21,21 @@
         //await ProtectedSessionStore.SetAsync("LoginState", log);
         //return base.OnAfterRenderAsync(firstRender);
     }
-    bool LoginStatetem=false;   
+    bool LoginStatetem = false;
     //LoginState
 
-    async Task GetSessionValue(){
-        var result=await ProtectedSessionStore.GetAsync<bool>("LoginState");
-        if(result.Success==true){
-            LoginStatetem=result.Value;
+    async Task GetSessionValue()
+    {
+        var result = await ProtectedSessionStore.GetAsync<bool>("LoginState");
+        if (result.Success == true)
+        {
+            LoginStatetem = result.Value;
         }
     }
-    string errormsg="";
+    string errormsg = "";
 }
 
-<h1>LoginPage @LoginStatetem</h1>:@Id 
+<h1>LoginPage @LoginStatetem</h1>:@Id
 <br />
 @if (errormsg.Any())
 {
@@ -45,73 +48,84 @@
     </div>
 }
 <br />
- <span>
-AccountId:
+<span>
+    AccountId:
+    <br />
+    <InputNumber TValue="Int32" @bind-Value=accountid>
+    </InputNumber>
+</span>
 <br />
-<InputNumber TValue="Int32" @bind-Value=accountid>
-</InputNumber>
- </span>
- <br />
- <span>
-AccountPassword:
-<br />
-<InputText  @bind-Value=accountpsw>
-</InputText>
- </span>
+<span>
+    AccountPassword:
+    <br />
+    <InputText @bind-Value=accountpsw>
+    </InputText>
+</span>
 <br />
 
-@if(LoginStatetem==true){
-<button @onclick="Logout" >Log out</button>
-}else{
-<button @onclick="Login" >Login</button>
+@if (LoginStatetem == true)
+{
+    <button @onclick="Logout">Log out</button>
+}
+else
+{
+    <button @onclick="Login">Login</button>
 
 }
 
-@code{
-    int accountid=-2;
-    string accountpsw="fza";
+@code {
+    int accountid = -2;
+    string accountpsw = "fza";
     //string log = "true";
-    async Task Login(){
+    async Task Login()
+    {
         @* Console.WriteLine("2"); *@
         var str = await GetPswFromDbById(accountid);
-        errormsg+=str;
+        errormsg += str;
         //accountpsw=errormsg;
         @* Console.WriteLine("5"); *@
-        if(accountpsw!=str){
-            errormsg+=" / password or id not right" ;
+        if (accountpsw != str)
+        {
+            errormsg += " / password or id not right";
             //await ProtectedSessionStore.SetAsync("LoginState", false);
             return;
         }
         //log = "true";
         await ProtectedSessionStore.SetAsync("LoginState", true);
+        await ProtectedSessionStore.SetAsync("PersonId", accountid);
+        await ProtectedSessionStore.SetAsync("Right", 0);
+        //await ProtectedSessionStore.SetAsync("Name", 0);
         //无法确保输入正确的值
         await GetSessionValue();
 
         StateHasChanged();
     }
-    async Task Logout(){
+    async Task Logout()
+    {
         //log="false";
         await ProtectedSessionStore.SetAsync("LoginState", false);
         StateHasChanged();
     }
 
-    async Task<string>  GetPswFromDbById(int Id){
+    async Task<string?> GetPswFromDbById(int Id)
+    {
         @* Console.WriteLine("3"); *@
-        string? pswstr = await Dc!.GetOneOwnPropertyAsync<string>("Accountinfos/Passwords",Id);
-        if (pswstr == ""){
-            errormsg+="task psw is null";
+        string? pswstr = await Dc!.GetOneOwnPropertyAsync<string>("Accountinfos/Passwords", Id);
+        if (pswstr is "")
+        {
+            errormsg += "task psw is null";
             return null;
             //return errormsg="task psw is null";
         }
         @* Console.WriteLine("4"); *@
         //GetOwnPropertyAsync
         @* if(task.FirstOrDefault<string>()){
-        } *@
+} *@
         @* var a = task;
-            if (a is null){
-                return errormsg="First psw is null";
-            } *@
-        return pswstr!;  
+if (a is null){
+return errormsg="First psw is null";
+} *@
+        return pswstr!;
         //return "";
     }
 }

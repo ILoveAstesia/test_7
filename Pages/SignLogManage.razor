@@ -1,0 +1,73 @@
+@page "/SignLogPage"
+@using test_7.Model;
+
+<ErrorMsg errormsg=@errorMsgstr></ErrorMsg>
+@* <ListComponent Name="Department" ItemType="Department" DataList="DeptDataList"> *@
+
+<ListComponent Name="SignLogs" ItemType=SignLog DataList=loglist>
+    <HeadTemplet>
+        <th>OrderNumber</th>
+        <th>Id</th>
+        <th>Arrived</th>
+        <th>Exited</th>
+
+    </HeadTemplet>
+    <RowTemplet>
+        <td>/</td>
+        <td>@context.Id</td>
+        <td>@context.Arrive</td>
+        <td>@context.Exit</td>
+    </RowTemplet>
+    <ContentTemplet>
+        <span>PersonId:@Idstr</span>
+    </ContentTemplet>
+</ListComponent>
+
+
+@inject Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage.ProtectedSessionStorage ProtectedSessionStore
+@inject IHttpClientFactory client
+@code {
+    string Idstr="";
+    string errorMsgstr = "";
+    List<SignLog> loglist = [];
+    Controller.DaoController? Dc;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        var result = await ProtectedSessionStore.GetAsync<int>("PersonId");
+            if (result.Success == false)
+            {
+                errorMsgstr+="Cant Get PersonId"+result.ToString();
+            }
+            Idstr=result.Value.ToString();
+            await GetAllById(result.Value);
+
+        }
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task GetAllById(int Id)
+    {
+        
+        Dc = new(client);
+
+        var result = await Dc.GetOwnPropertyAsync<SignLog>("SignLogs", Id);
+
+        if (result is null)
+        {
+            errorMsgstr = "result is null";
+            return;
+        }
+
+        loglist = result;
+
+        StateHasChanged();
+        //return
+    }
+}

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
+using test_7.Controller;
 using test_7.Data;
 using test_7.Model;
 
@@ -18,11 +19,20 @@ builder.Services.AddHttpClient("client_1",config=>  //这里指定的name=client
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
 //AppState store
 //builder.Services.AddScoped<Accountinfo>();
-
+// IHttpClientFactory httpClientFactory;
+// HttpClient hpc = new(){
+//     BaseAddress=new Uri("http://localhost:5198/");
+// }
+// builder.Services.AddSingleton<DaoController>(
+//     hpc
+//     //httpClientFactory.CreateClient(client_1);
+// );
 
 builder.Services.AddSingleton<Accountinfo>();
+
 //builder.Services.AddSingleton<string>("http://localhost:5198/");
 
 //builder.Services.AddSingleton<WeatherForecastService>();

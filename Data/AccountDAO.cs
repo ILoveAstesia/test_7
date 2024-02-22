@@ -8,24 +8,28 @@ namespace test_7.Data;
 
 [Route("DAOs/Accountinfos")]
 [ApiController]
-public class AccountDAO {
+public class AccountDAO
+{
     readonly test_7Context _db;
 
-    public AccountDAO(test_7Context db){
-        _db=db;
+    public AccountDAO(test_7Context db)
+    {
+        _db = db;
     }
 
     [HttpGet]
-    public async Task<List<Accountinfo>> GetAllAsync(){
+    public async Task<List<Accountinfo>> GetAllAsync()
+    {
         return await _db.Accountinfos.ToListAsync();
     }
 
     [HttpGet("{id}", Name = "AccountinfoGetById")]
     [ActionName("AccountinfoGet1")]
-    public async Task<ActionResult<List<Accountinfo>>> GetByIdAsync(int id){
+    public async Task<ActionResult<List<Accountinfo>>> GetByIdAsync(int id)
+    {
         //await _db.Departments.ToListAsync();
         //await _db.Departments.Where(p => p.Id == id).ToListAsync()
-        return 
+        return
         (await _db.Accountinfos.Where(p => p.Id == id).ToListAsync())
         .OrderByDescending(p => p.Id)
         .ToList();
@@ -36,30 +40,31 @@ public class AccountDAO {
     // public async Task<ActionResult<List<Department>>> GetDeptsByIdAsync(int id){
 
     //     Console.WriteLine("Person need to get departments is arrived");
-        
+
     //     return 
     //     (await _db.Departments.Where(d=> d.Persons.Any(j => j.Id== id)).ToListAsync())
     //     .OrderByDescending(d => d.Id)
     //     .ToList();
     // }
-//Accountinfos/Password/
+    //Accountinfos/Password/
     [HttpGet("Passwords/{id}", Name = "AccountinfoGetPasswordById")]
     [ActionName("AccountinfoGetPassword1")]
-    public async Task<String?> GetPasswordByIdAsync(int id){
+    public async Task<String?> GetPasswordByIdAsync(int id)
+    {
 
-        Console.WriteLine("Account need to get psw is arrived Id:"+id);
-        var ac = await _db.Accountinfos.Where(a=> a.Id == id).FirstOrDefaultAsync<Accountinfo>();
-        
-        if(ac is null)
-        return 
-        // "{}";
-        JsonSerializer.Serialize("");
-        var psw =ac.Password;
+        Console.WriteLine("Account need to get psw is arrived Id:" + id);
+        var ac = await _db.Accountinfos.Where(a => a.Id == id).FirstOrDefaultAsync<Accountinfo>();
+
+        if (ac is null)
+            return
+            // "{}";
+            JsonSerializer.Serialize("");
+        var psw = ac.Password;
         // Console.WriteLine("1");
         return JsonSerializer.Serialize(psw);
     }
 
-    
+
     // //
     // [HttpPost]
     // public async Task AddAsync(Person dept){
@@ -72,7 +77,7 @@ public class AccountDAO {
     //     _db.Persons.UpdateRange(deptlist);
     //     await _db.SaveChangesAsync();
     // }
-    
+
     // [HttpPost("Delete")]
     // [ActionName("PersonDelete1")]
     // public async Task DeleteAsync(List<int>? Idlist){

@@ -1,30 +1,37 @@
 @page "/departmentPage/{requestId:int}"
 departmentPage
 <!-- #region initializeation -->
-@code{
+@* @inject IHttpClientFactory httpclient *@
+@code {
     [Parameter]
-    public int requestId{ get; set; }=0;
+    public int requestId { get; set; } = 0;
     int SearchId;
     List<Department>? DeptDataList;
-    static HttpClient httpclient =new(){
-    BaseAddress=new Uri("http://localhost:5198/"),
-    };
+    static HttpClient httpclient = new()
+        {
+            BaseAddress = new Uri("http://localhost:5198/"),
+        };
+    Controller.DepartmentController dpc = new(httpclient);
     String errormsg = "";
-    @* static string Serialize(string[] source) => 
-        System.Net.WebUtility.UrlEncode(System.Text.Json.JsonSerializer.Serialize(source)); *@
+    @* static string Serialize(string[] source) =>
+System.Net.WebUtility.UrlEncode(System.Text.Json.JsonSerializer.Serialize(source)); *@
 
-    Controller.DepartmentController dpc=new(httpclient);
-
+    //Controller.DepartmentController dpc = new(httpclient);
+    protected override void OnInitialized()
+    {
+        //dpc = new(httpclient);
+        base.OnInitialized();
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         @* if (firstRender||requestId==0)
-        {
-            await GetAllDept();
-            //StateHasChanged();
-        }else{
+{
+await GetAllDept();
+//StateHasChanged();
+}else{
 
 
-        } *@
+} *@
 
         SearchId = requestId;
         await GetDeptById();
@@ -39,7 +46,7 @@ departmentPage
 {
     //=new DateTime(2023,12,8,16,30,00);
     //"2023/12/6 18:30:00";
-    errormsg+=DateTime.Now.ToShortDateString();
+    errormsg += DateTime.Now.ToShortDateString();
     <div>
         <p class=" bg-danger text-warning  p-3  w-70   ">@errormsg</p>
         <button @onclick="@(e=> errormsg="")" class=" btn-close "></button>
@@ -54,20 +61,24 @@ select department by Id:
 
 
 <div class="DepartmentList ">
-    @if(DeptDataList is null||DeptDataList.Count==0){
-        <p>Null Or Loding...</p><p>If it is too loon, You can</p>
+    @if (DeptDataList is null || DeptDataList.Count == 0)
+    {
+        <p>Null Or Loding...</p>
+        <p>If it is too loon, You can</p>
         <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
-    }else{
-    <ListComponent Name="Department" ItemType="Department" DataList="DeptDataList">
+    }
+    else
+    {
+        <ListComponent Name="Department" ItemType="Department" DataList="DeptDataList">
 
-        <HeadTemplet>
-            <th>OrderNumber</th>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Operation
-                <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
-                <button @onclick=UpdateDepartment class="btn-secondary">Update</button>
-                @* @{
+            <HeadTemplet>
+                <th>OrderNumber</th>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Operation
+                    <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
+                    <button @onclick=UpdateDepartment class="btn-secondary">Update</button>
+                    @* @{
                 bool notContains =false;
 
                 if(selectedIdList is not null){
@@ -77,46 +88,46 @@ select department by Id:
 
                 disabled=@notContains
                 } *@
-                <button @onclick=DeleteDepartment class="btn-danger">Delete</button>
+                    <button @onclick=DeleteDepartment class="btn-danger">Delete</button>
 
-            </th>
-            <br>
+                </th>
+                <br>
 
-        </HeadTemplet>
-        <RowTemplet>
-            <td></td>
-            <td>@context.Id</td>
-            <td><input @bind-value=@context.Name></td>
-            <td>
-                @{
-                    void select()
-                    {
-
-                        if (selectedIdList!.Contains(context.Id))
+            </HeadTemplet>
+            <RowTemplet>
+                <td></td>
+                <td>@context.Id</td>
+                <td><input @bind-value=@context.Name></td>
+                <td>
+                    @{
+                        void select()
                         {
-                            selectedIdList.Remove(context.Id);
-                            return;
+
+                            if (selectedIdList!.Contains(context.Id))
+                            {
+                                selectedIdList.Remove(context.Id);
+                                return;
+                            }
+                            selectedIdList.Add(context.Id);
                         }
-                        selectedIdList.Add(context.Id);
                     }
-                }
-                <input type="checkbox" @onclick=select />
-                @* <button class=" disabled " disabled="true" @onclick="@(
+                    <input type="checkbox" @onclick=select />
+                    @* <button class=" disabled " disabled="true" @onclick="@(
                 e=> dpc.DeleteAsync(context.Id)
                 )">Delete</button> *@
-            </td>
-        </RowTemplet>
-        <ContentTemplet>
+                </td>
+            </RowTemplet>
+            <ContentTemplet>
 
-            <p>TotalNumber:@DeptDataList!.Count();</p>
+                <p>TotalNumber:@DeptDataList!.Count();</p>
 
-            <td><input type="number" @bind=dept!.Id class=" input-group-text"></td>
+                <td><input type="number" @bind=dept!.Id class=" input-group-text"></td>
 
-            <td><input type="text" @bind=dept.Name class=" input-group-text"></td>
+                <td><input type="text" @bind=dept.Name class=" input-group-text"></td>
 
-            <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a NewDepartment</button>
-        </ContentTemplet>
-    </ListComponent>
+                <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a NewDepartment</button>
+            </ContentTemplet>
+        </ListComponent>
     }
 </div>
 
@@ -129,16 +140,16 @@ select department by Id:
     //错误提示信息
 
     async Task GetDeptById()
-    {   //var x = await dpc.GetByIdAsync(SearchId);
-       // List<Department> a = await dpc.GetByIdAsync(SearchId);
-        List<Department>? a= await dpc.GetByIdAsync(SearchId);
+    { //var x = await dpc.GetByIdAsync(SearchId);
+      // List<Department> a = await dpc.GetByIdAsync(SearchId);
+        List<Department>? a = await dpc.GetByIdAsync(SearchId);
         if (a is null)
         {
             Console.WriteLine("cant get datalist all,may time out or null database;");
             return;
         }
         DeptDataList = a;
-        SearchId=0;
+        SearchId = 0;
         StateHasChanged();
     }
 
@@ -207,7 +218,7 @@ select department by Id:
         selectedIdList = new();
         //await GetAllDept();
         NavigationManager.NavigateTo("/departmentPage", true);//refresh
-                                                //StateHasChanged();
+                                                              //StateHasChanged();
     }
 
     @* void UpdateDepartment(){

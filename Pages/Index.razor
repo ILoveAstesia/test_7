@@ -1,7 +1,6 @@
 ﻿@page "/"
 
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedSessionStorage ProtectedSessionStore
+<ErrorMsg errormsg=@errstr></ErrorMsg>
 @* @inject String str
 <h1>@str</h1> *@
 二月
@@ -23,7 +22,7 @@
 @if(LoginStatetem==true){
     @if(Signed==true){
         <span>
-            @name：到达时间 @signlogtem.Arrive ;
+            @name：到达时间 @SignLogTEM.Arrive ;
             <button @onclick="PersonExit">check out</button>
         </span>
     }else{
@@ -31,16 +30,20 @@
     }
 }
 </span>
+@* <button @onclick="PersonArrived" class="btn-primary">check in</button> *@
 
-
-
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+@* @inject Controller.DaoController Dc *@
+@inject IHttpClientFactory httpclientfactory
 @code{
     
     @* bool Exitalert=false; *@
     string name="樊志安";
-    int Personid=3;
+    //int Personid=-2;
     bool Signed=false;
-    SignLog signlogtem {get;set;}=new();
+    string errstr="";
+    SignLog SignLogTEM {get;set;}=new();
     bool LoginStatetem=false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -53,20 +56,38 @@
         //=result.Success ? result.Value : "false";
         //return base.OnAfterRenderAsync(firstRender);
     }
-    void PersonArrived(){
+    
+     async Task PersonArrived(){
         Signed=true;
         
-        signlogtem.Id=DateTime.Now.Year+DateTime.Now.Month+DateTime.Now.Day;
-        signlogtem.PersonId=Personid;
-        signlogtem.Arrive=DateTime.Now;
+        //SignLogTEM.Id=DateTime.Now.Year+DateTime.Now.Month+DateTime.Now.Day;
+        var result = await ProtectedSessionStore.GetAsync<int>("PersonId");
+        if (result.Success == false)
+        {
+            //
+            //Personid=;
+            errstr+="GetPersonId Failed"+result.ToString()+result.Value;
+
+            return;
+        }
+
+            SignLogTEM.PersonId=result.Value;
+            SignLogTEM.Arrive=DateTime.Now;
+        
+
         //2024/2/20 22:37:23
         
         //signlogtem.Exit=new DateTime(2023,12,8,16,30,00);
     }
-    void PersonExit(){
+    async Task  PersonExit(){
         //Signed=true;
         //Exitalert=true;
-        signlogtem.Exit=DateTime.Now;
+        Signed=false;
+        SignLogTEM.Exit=DateTime.Now;
+        Controller.DaoController Dc = new(httpclientfactory);
+        await Dc.AddOneAsync("SignLogs",SignLogTEM);
+        SignLogTEM.Exit=new DateTime(0);
+        SignLogTEM.Arrive=new DateTime(0);
     }
 
 }

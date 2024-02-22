@@ -6,16 +6,20 @@
         </button>
 
         @{
-            bool LoginState=false;
 
-            int currentId=0;
+            bool LoginState = false;
 
-            string hrefString="Login";
-            hrefString+="/"+currentId;
-            if(LoginState==false){
-            <button class=" btn-success"  ><a href=@hrefString class=" btn-success">Login now!</a></button>
+            int currentId = 0;
+
+            string hrefString = "Login";
+            hrefString += "/" + currentId;
+            if (LoginState == false)
+            {
+                <button class=" btn-success"><a href=@hrefString class=" btn-success">Login now!</a></button>
             }
+            
         }
+
     </div>
 </div>
 
@@ -32,9 +36,9 @@
             </NavLink>
         </div>
         @* <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
+        <NavLink class="nav-link" href="fetchdata">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+        </NavLink>
         </div> *@
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="departmentPage">
@@ -48,6 +52,11 @@
             </NavLink>
         </div>
 
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="SignLogPage">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> To Do SignLog
+            </NavLink>
+        </div>
 
     </nav>
 </div>

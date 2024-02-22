@@ -74,6 +74,7 @@ public class test_7Context : DbContext
     public DbSet<Class> Clazzs { get; set; }
     public DbSet<Course> Courses { get; set; }
     public DbSet<Accountinfo> Accountinfos { get; set; }
+    public DbSet<SignLog> SignLogs { get; set; }
     //public DbSet<DepartmentPerson> DepartmentPersons { get; set; }
     /**
     protected override void OnModelCreating(ModelBuilder modelBuilder)
