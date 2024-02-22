@@ -51,10 +51,11 @@ public class AccountDAO {
         var ac = await _db.Accountinfos.Where(a=> a.Id == id).FirstOrDefaultAsync<Accountinfo>();
         
         if(ac is null)
-        return null;
-        
+        return 
+        // "{}";
+        JsonSerializer.Serialize("");
         var psw =ac.Password;
-        Console.WriteLine("1");
+        // Console.WriteLine("1");
         return JsonSerializer.Serialize(psw);
     }
 

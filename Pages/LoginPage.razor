@@ -72,12 +72,13 @@ AccountPassword:
     string accountpsw="fza";
     //string log = "true";
     async Task Login(){
-        Console.WriteLine("2");
-        errormsg=await GetPswFromDbById(accountid);
+        @* Console.WriteLine("2"); *@
+        var str = await GetPswFromDbById(accountid);
+        errormsg+=str;
         //accountpsw=errormsg;
-        Console.WriteLine("5");
-        if(accountpsw!=errormsg){
-            errormsg="password or id not right" ;
+        @* Console.WriteLine("5"); *@
+        if(accountpsw!=str){
+            errormsg+=" / password or id not right" ;
             //await ProtectedSessionStore.SetAsync("LoginState", false);
             return;
         }
@@ -95,12 +96,14 @@ AccountPassword:
     }
 
     async Task<string>  GetPswFromDbById(int Id){
-        Console.WriteLine("3");
-        var task=await Dc!.GetOneOwnPropertyAsync<string>("Accountinfos/Passwords",Id);
-        if (task is null){
-            return errormsg="task psw is null";
+        @* Console.WriteLine("3"); *@
+        string? pswstr = await Dc!.GetOneOwnPropertyAsync<string>("Accountinfos/Passwords",Id);
+        if (pswstr == ""){
+            errormsg+="task psw is null";
+            return null;
+            //return errormsg="task psw is null";
         }
-        Console.WriteLine("4");
+        @* Console.WriteLine("4"); *@
         //GetOwnPropertyAsync
         @* if(task.FirstOrDefault<string>()){
         } *@
@@ -108,7 +111,7 @@ AccountPassword:
             if (a is null){
                 return errormsg="First psw is null";
             } *@
-        return task;  
+        return pswstr!;  
         //return "";
     }
 }
