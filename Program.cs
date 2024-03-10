@@ -43,7 +43,7 @@ builder.Services.AddSingleton<Accountinfo>();
 //conect to my sql
 builder.Services.AddDbContext<test_7Context>(opt =>
 {
-    var cs=builder.Configuration.GetConnectionString("MySqlLapTop");
+    var cs=builder.Configuration.GetConnectionString("MySqlDeskTop");
     if(cs==null){
         Console.WriteLine("conectionString is null");
         Environment.Exit(0);
