@@ -51,8 +51,13 @@ builder.Services.AddDbContext<test_7Context>(opt =>
     opt.UseMySQL(cs);
 });
 
+//Add Ant Design
+builder.Services.AddAntDesign();
+
 
 var app = builder.Build();
+
+
 
 //add seeding service
 /*

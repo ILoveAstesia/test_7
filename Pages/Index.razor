@@ -1,97 +1,191 @@
 ﻿@page "/"
+@using AntDesign
+
 
 <ErrorMsg errormsg=@errstr></ErrorMsg>
 @* @inject String str
-<h1>@str</h1> *@
+<h1>@str</h1>
+src="shopping-8042865.svg"
+*@
+
+<Card Style="width: 95%;" BodyStyle="padding: 0; overflow: hidden;">
+    <Flex Justify="space-between">
+        <img alt="avatar" src="geometric-7719159.svg" style="display:block;width:50%;" />
+        <Flex Vertical Align="flex-end" Justify="space-between" Style="padding: 32px;">
+            <Title Level="3">
+                “antd is an enterprise-class UI design language and React UI library.”
+            </Title>
+            <span>LoginStatetem:@LoginStatetem.ToString();</span>
+            @if (LoginStatetem == true)
+            {
+                @if (Signed == true)
+                {
+                    <span>
+                        @name：到达时间 @SignLogTEM.Arrive ;
+                        <Button @onclick="PersonExit" Type="@ButtonType.Primary">check out</Button>
+                    </span>
+                }
+                else
+                {
+                    <Button @onclick="PersonArrived" Type="@ButtonType.Primary">check in</Button>
+                }
+            }
+        </Flex>
+@* 
+        <GridRow Gutter="450" Style="margin-top:0">
+
+            <GridCol Span="8">
+
+
+            </GridCol>
+            <GridCol Span="8">
+
+
+            </GridCol>
+        </GridRow> *@
+                <Card Hoverable Title=@("二月") Style="width: 300px;margin:1%">
+                    <p>樊志安 22/31</p>
+                    <p>罗维 30/31</p>
+                    <p>徐昌坤 8/31</p>
+                </Card>
+                <Card Hoverable Title=@("三月") Style="width: 300px;margin:1%">
+                    <p>樊志安 26/30</p>
+                    <p>罗维 30/30</p>
+                    <p>徐昌坤 8/30</p>
+                </Card>
+    </Flex>
+
+</Card>
+
+@*
+<Card Style="width: 75%;" BodyStyle="padding: 0; overflow: hidden;">
+<Flex Justify="space-between">
+<img alt="avatar"
+src="shopping-8042865.svg"
+style="width:50%;" />
+
+<Flex Vertical Align="flex-end" Justify="space-between" Style="padding: 32px;">
+<Title Level="3">
+“antd is an enterprise-class UI design language and React UI library.”
+</Title>
+
+
+</Flex>
+<Card Hoverable Title=@("二月") Style="width: 300px;">
+<p>樊志安 22/31</p>
+<p>罗维 30/31</p>
+<p>徐昌坤 8/31</p>
+</Card>
+<Card Hoverable Title=@("三月") Style="width: 300px;">
+<p>樊志安 26/30</p>
+<p>罗维 30/30</p>
+<p>徐昌坤 8/30</p>
+</Card>
+</Flex>
+
+
+</span>
+
+</Card> *@
+@* <Space Direction="DirectionVHType.Vertical">
+<SpaceItem>
+
+
+</SpaceItem>
+<SpaceItem>
+
+</SpaceItem>
+</Space> *@
+
+
+
+
+
 二月
-樊志安  22/31
-罗维    30/31
-徐昌坤  8/31
+樊志安 22/31
+罗维 30/31
+徐昌坤 8/31
 
 三月
-樊志安  26/30
-罗维    30/30
-徐昌坤  8/30
+樊志安 26/30
+罗维 30/30
+徐昌坤 8/30
 
 今天
-樊志安  [已签到]
-罗维    [Null]
-徐昌坤  [NoPlan]
+樊志安 [已签到]
+罗维 [Null]
+徐昌坤 [NoPlan]
+@using AntDesign.Charts
+@using Title = AntDesign.Charts.Title
 
-<span>LoginStatetem:@LoginStatetem.ToString();
-@if(LoginStatetem==true){
-    @if(Signed==true){
-        <span>
-            @name：到达时间 @SignLogTEM.Arrive ;
-            <button @onclick="PersonExit">check out</button>
-        </span>
-    }else{
-        <button @onclick="PersonArrived">check in</button>
-    }
-}
-</span>
+
+
+
 @* <button @onclick="PersonArrived" class="btn-primary">check in</button> *@
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
 @* @inject Controller.DaoController Dc *@
 @inject IHttpClientFactory httpclientfactory
-@code{
-    
+@code {
+
     @* bool Exitalert=false; *@
-    string name="樊志安";
+    string name = "樊志安";
     //int Personid=-2;
-    bool Signed=false;
-    string errstr="";
-    SignLog SignLogTEM {get;set;}=new();
-    bool LoginStatetem=false;
+    bool Signed = false;
+    string errstr = "";
+    SignLog SignLogTEM { get; set; } = new();
+    bool LoginStatetem = false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var result=await ProtectedSessionStore.GetAsync<bool>("LoginState");
-        if(result.Success==true){
-            LoginStatetem=result.Value;
+        var result = await ProtectedSessionStore.GetAsync<bool>("LoginState");
+        if (result.Success == true)
+        {
+            LoginStatetem = result.Value;
         }
 
         StateHasChanged();
         //=result.Success ? result.Value : "false";
         //return base.OnAfterRenderAsync(firstRender);
     }
-    
-     async Task PersonArrived(){
-        Signed=true;
-        
+
+    async Task PersonArrived()
+    {
+        Signed = true;
+
         //SignLogTEM.Id=DateTime.Now.Year+DateTime.Now.Month+DateTime.Now.Day;
         var result = await ProtectedSessionStore.GetAsync<int>("PersonId");
         if (result.Success == false)
         {
             //
             //Personid=;
-            errstr+="GetPersonId Failed"+result.ToString()+result.Value;
+            errstr += "GetPersonId Failed" + result.ToString() + result.Value;
 
             return;
         }
 
-            SignLogTEM.PersonId=result.Value;
-            SignLogTEM.Arrive=DateTime.Now;
-        
+        SignLogTEM.PersonId = result.Value;
+        SignLogTEM.Arrive = DateTime.Now;
+
 
         //2024/2/20 22:37:23
-        
+
         //signlogtem.Exit=new DateTime(2023,12,8,16,30,00);
     }
-    async Task  PersonExit(){
+    async Task PersonExit()
+    {
         //Signed=true;
         //Exitalert=true;
-        Signed=false;
-        SignLogTEM.Exit=DateTime.Now;
+        Signed = false;
+        SignLogTEM.Exit = DateTime.Now;
         Controller.DaoController Dc = new(httpclientfactory);
-        await Dc.AddOneAsync("SignLogs",SignLogTEM);
-        SignLogTEM.Exit=new DateTime(0);
-        SignLogTEM.Arrive=new DateTime(0);
+        await Dc.AddOneAsync("SignLogs", SignLogTEM);
+        SignLogTEM.Exit = new DateTime(0);
+        SignLogTEM.Arrive = new DateTime(0);
     }
 
 }
 
-@* 
+@*
 <button>Sign</button>
 <button>Sign in</button> *@

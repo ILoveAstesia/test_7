@@ -35,7 +35,12 @@
     string errormsg = "";
 }
 
-<h1>LoginPage @LoginStatetem</h1>:@Id
+<Card Style="width: 100%;" BodyStyle="padding: 0; overflow: hidden;">
+
+    <GridRow Align="middle" >
+        <GridCol Span="6" style="padding: 1%;">
+            <h1>LoginPage @LoginStatetem</h1>:@Id
+                
 <br />
 @if (errormsg.Any())
 {
@@ -51,8 +56,8 @@
 <span>
     AccountId:
     <br />
-    <InputNumber TValue="Int32" @bind-Value=accountid>
-    </InputNumber>
+    <AntDesign.InputNumber TValue="Int32" @bind-Value=accountid>
+    </AntDesign.InputNumber>
 </span>
 <br />
 <span>
@@ -65,13 +70,24 @@
 
 @if (LoginStatetem == true)
 {
-    <button @onclick="Logout">Log out</button>
+    <Button @onclick="Logout" Type="@ButtonType.Primary">Log out</Button>
 }
 else
 {
-    <button @onclick="Login">Login</button>
+    <Button @onclick="Login" Type="@ButtonType.Primary">Login</Button>
 
 }
+        </GridCol>
+        <GridCol Span="18">
+            <img src="triangles-1430105.svg">
+        </GridCol>
+
+    </GridRow>
+
+</Card>
+
+
+                
 
 @code {
     int accountid = -2;
