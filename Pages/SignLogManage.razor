@@ -34,6 +34,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -41,9 +42,11 @@
         if (firstRender)
         {
         var result = await ProtectedSessionStore.GetAsync<int>("PersonId");
-            if (result.Success == false)
+            if (result.Success == false || result.Value==0)
             {
-                errorMsgstr+="Cant Get PersonId"+result.ToString();
+                errorMsgstr+="Cant Get PersonId For:"+result.Value;
+                StateHasChanged();
+                return;
             }
             Idstr=result.Value.ToString();
             await GetAllById(result.Value);

@@ -11,7 +11,8 @@ departmentPage
         {
             BaseAddress = new Uri("http://localhost:5198/"),
         };
-    Controller.DepartmentController dpc = new(httpclient);
+    @* Controller.DaoController dc = new(httpclient); *@
+    Controller.DaoController? Dc; 
     String errormsg = "";
     @* static string Serialize(string[] source) =>
 System.Net.WebUtility.UrlEncode(System.Text.Json.JsonSerializer.Serialize(source)); *@
@@ -24,17 +25,18 @@ System.Net.WebUtility.UrlEncode(System.Text.Json.JsonSerializer.Serialize(source
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        @* if (firstRender||requestId==0)
-{
-await GetAllDept();
-//StateHasChanged();
-}else{
+                if (firstRender||requestId==0)
+        {
+            SearchId = requestId;   
+            await GetDeptById();
+        //await GetAllDept();
+        //StateHasChanged();
+        }else{
 
 
-} *@
+        }
 
-        SearchId = requestId;
-        await GetDeptById();
+
         await
         base.OnAfterRenderAsync(firstRender);
     }
@@ -77,8 +79,9 @@ select department by Id:
                 <th>Name</th>
                 <th>Operation
                     <button @onclick=GetAllDept class=" btn-success ">RefreshDept</button>
+                    @* 
                     <button @onclick=UpdateDepartment class="btn-secondary">Update</button>
-                    @* @{
+                    @{
                 bool notContains =false;
 
                 if(selectedIdList is not null){
@@ -87,8 +90,9 @@ select department by Id:
                 }
 
                 disabled=@notContains
-                } *@
+                } 
                     <button @onclick=DeleteDepartment class="btn-danger">Delete</button>
+                *@
 
                 </th>
                 <br>
@@ -99,7 +103,7 @@ select department by Id:
                 <td>@context.Id</td>
                 <td><input @bind-value=@context.Name></td>
                 <td>
-                    @{
+                    @* @{
                         void select()
                         {
 
@@ -111,7 +115,7 @@ select department by Id:
                             selectedIdList.Add(context.Id);
                         }
                     }
-                    <input type="checkbox" @onclick=select />
+                    <input type="checkbox" @onclick=select /> *@
                     @* <button class=" disabled " disabled="true" @onclick="@(
                 e=> dpc.DeleteAsync(context.Id)
                 )">Delete</button> *@
@@ -121,11 +125,11 @@ select department by Id:
 
                 <p>TotalNumber:@DeptDataList!.Count();</p>
 
-                <td><input type="number" @bind=dept!.Id class=" input-group-text"></td>
+                @* <td><input type="number" @bind=dept!.Id class=" input-group-text"></td>
 
                 <td><input type="text" @bind=dept.Name class=" input-group-text"></td>
 
-                <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a NewDepartment</button>
+                <button @onclick=addDepartment disabled=@isSubmitting class=" btn-primary">Add a NewDepartment</button> *@
             </ContentTemplet>
         </ListComponent>
     }
@@ -133,6 +137,7 @@ select department by Id:
 
 <hr>
 <!-- dept code-->
+@inject IHttpClientFactory httpClient;
 @inject NavigationManager NavigationManager;
 @code {
     //String? displayPass="未输入";
@@ -142,29 +147,35 @@ select department by Id:
     async Task GetDeptById()
     { //var x = await dpc.GetByIdAsync(SearchId);
       // List<Department> a = await dpc.GetByIdAsync(SearchId);
-        List<Department>? a = await dpc.GetByIdAsync(SearchId);
-        if (a is null)
+        Dc=new(httpClient);
+        DeptDataList=await Dc.GetOwnPropertyAsync<Department>("Persons/Departments",SearchId); 
+        
+        StateHasChanged();
+        //List<Department>? a =   Dc.GetOwnPropertyAsync<Department>("Departments/"+SearchId); 
+            // await dc.GetDeptsByIdAsync(SearchId);
+        if (DeptDataList is null)
         {
             Console.WriteLine("cant get datalist all,may time out or null database;");
             return;
         }
-        DeptDataList = a;
-        SearchId = 0;
+        //DeptDataList = a;
+        //SearchId = 0;
         StateHasChanged();
     }
 
-    async Task GetAllDept()
+    void  GetAllDept()
     {
-        var a = await dpc.GetAllAsync();
+        @* var a = await dpc.GetAllAsync();
         if (a is null)
         {
             Console.WriteLine("cant get datalist all,may time out or null database;");
             return;
         }
-        DeptDataList = a;
+        DeptDataList = a; *@
+        NavigationManager.NavigateTo("/departmentPage", true);
         StateHasChanged();
     }
-    bool isSubmitting = false;
+    @* bool isSubmitting = false;
     Department? dept = new();
     //[System.ComponentModel.DataAnnotations.Required]
     //int newId;
@@ -213,13 +224,13 @@ select department by Id:
         {
             Console.WriteLine(i.ToString());
         }
-        @* return; *@
+        // return; 
         await dpc.DeleteAsync(selectedIdList);
         selectedIdList = new();
         //await GetAllDept();
         NavigationManager.NavigateTo("/departmentPage", true);//refresh
                                                               //StateHasChanged();
-    }
+    } *@
 
     @* void UpdateDepartment(){
 

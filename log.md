@@ -1,5 +1,9 @@
 # Current:
 ---
+bug:
+登出依旧显示signlog
+department p 传输大于等于2的值会死循环
+
 完成绩效管理
 1. 考勤
    1. 签到

@@ -7,6 +7,7 @@ PersonPage
 
 <!-- #region list code for person-->
 
+<ErrorMsg errormsg=@msg></ErrorMsg>
 
     select Person Property by Id:
 <input type="number" @bind=SearchId>
@@ -88,7 +89,7 @@ PersonPage
             <td><input type="number" @bind=tempPerson!.Id class=" input-group-text"></td>
             <td><input type="text" @bind=tempPerson.Name class=" input-group-text"></td>
             @* <td><input type="text" @bind=tempPerson.Departments class=" input-group-text"></td> *@
-            <td><button>add dept</button></td>
+            <td><Button>add Person</Button></td>
             @* <button @onclick=addPerson disabled=@isSubmitting class=" btn-primary">Add a Person</button> *@
         </ContentTemplet>
     </ListComponent>
@@ -108,6 +109,7 @@ PersonPage
 @inject IHttpClientFactory _httpClient;
 
 @code{
+    string msg="";
     DaoController? Dc;
     @* PersonManage(){
         Dc=new(_httpClient);
@@ -147,6 +149,12 @@ PersonPage
         @* DeptDataList=await Dc.GetOwnPropertyAsync<Department>("Persons/Departments/",SearchId);
           SearchId=0; 
           *@
+          if(SearchId==0){
+            msg+="null dept";
+            StateHasChanged();
+            return;
+            //NavigationManager.NavigateTo("/");
+          }
         NavigationManager.NavigateTo("/departmentPage/"+SearchId);
     }
     List<Course>? CourseDataList =[];

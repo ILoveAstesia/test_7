@@ -39,11 +39,10 @@ builder.Services.AddSingleton<Accountinfo>();
 //builder.Services.AddSingleton<DepartmentService>();
 //builder.Services.AddSingleton<DaoService<Type>>();
 
-
 //conect to my sql
 builder.Services.AddDbContext<test_7Context>(opt =>
 {
-    var cs=builder.Configuration.GetConnectionString("MySqlDeskTop");
+    var cs=builder.Configuration.GetConnectionString("MySqlLapTop");
     if(cs==null){
         Console.WriteLine("conectionString is null");
         Environment.Exit(0);

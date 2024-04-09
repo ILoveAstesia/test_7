@@ -1,6 +1,10 @@
 ﻿@page "/"
 @using AntDesign
 
+@* 
+<Button @onclick="@(e=>{NavigationManager.NavigateTo("/Person");})">Back</Button>
+<Button @onclick="@(e=>{NavigationManager.NavigateTo("/");})">Return home</Button> 
+*@
 
 <ErrorMsg errormsg=@errstr></ErrorMsg>
 @* @inject String str
@@ -15,7 +19,7 @@ src="shopping-8042865.svg"
             <Title Level="3">
                 “antd is an enterprise-class UI design language and React UI library.”
             </Title>
-            <span>LoginStatetem:@LoginStatetem.ToString();</span>
+            <span>LoginStatetem:@LoginStatetem.ToString();Signed:@Signed.ToString()</span>
             @if (LoginStatetem == true)
             {
                 @if (Signed == true)
@@ -99,7 +103,15 @@ style="width:50%;" />
 
 
 
-
+<Button @onclick="thank" Type="@ButtonType.Primary">Thank you</Button>
+@using static Console
+@code{
+        void thank(){
+            WriteLine(
+                "THANK!"
+                );
+        }
+    }
 
 二月
 樊志安 22/31
@@ -115,8 +127,8 @@ style="width:50%;" />
 樊志安 [已签到]
 罗维 [Null]
 徐昌坤 [NoPlan]
-@using AntDesign.Charts
-@using Title = AntDesign.Charts.Title
+@* @using AntDesign.Charts
+@using Title = AntDesign.Charts.Title *@
 
 
 
@@ -138,10 +150,30 @@ style="width:50%;" />
     bool LoginStatetem = false;
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        //逻辑模糊，当第一次渲染的时候，判断是否有tem日志
+        if(firstRender){
+            var logresult = await ProtectedSessionStore.GetAsync<SignLog>("SignLogTEM");
+            if(logresult.Value != null){
+                SignLogTEM=logresult.Value;
+            }else{
+                errstr+="SignLogTEM null";
+                StateHasChanged();
+                return;
+            }
+        }
         var result = await ProtectedSessionStore.GetAsync<bool>("LoginState");
+
+        var holder=await ProtectedSessionStore.GetAsync<bool>("Signed");    
+        Signed=holder.Value;
+
+            
+
+        //SignLogTEM.Arrive
+        
         if (result.Success == true)
         {
             LoginStatetem = result.Value;
+            
         }
 
         StateHasChanged();
@@ -166,22 +198,26 @@ style="width:50%;" />
 
         SignLogTEM.PersonId = result.Value;
         SignLogTEM.Arrive = DateTime.Now;
-
-
+        await ProtectedSessionStore.SetAsync("SignLogTEM", SignLogTEM);
+        await ProtectedSessionStore.SetAsync("Signed", true);
         //2024/2/20 22:37:23
-
+        StateHasChanged();
         //signlogtem.Exit=new DateTime(2023,12,8,16,30,00);
     }
     async Task PersonExit()
     {
         //Signed=true;
         //Exitalert=true;
-        Signed = false;
+        @* Signed = false; *@
+
         SignLogTEM.Exit = DateTime.Now;
         Controller.DaoController Dc = new(httpclientfactory);
         await Dc.AddOneAsync("SignLogs", SignLogTEM);
-        SignLogTEM.Exit = new DateTime(0);
-        SignLogTEM.Arrive = new DateTime(0);
+        await ProtectedSessionStore.SetAsync("Signed", false);
+        SignLogTEM.Exit = new DateTime();
+        SignLogTEM.Arrive = new DateTime();
+        await ProtectedSessionStore.SetAsync("SignLogTEM", SignLogTEM);
+        StateHasChanged();
     }
 
 }

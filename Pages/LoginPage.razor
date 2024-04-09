@@ -88,13 +88,14 @@ else
 
 
                 
-
+@inject NavigationManager NavigationManager;
 @code {
     int accountid = -2;
     string accountpsw = "fza";
     //string log = "true";
     async Task Login()
     {
+        errormsg="";
         @* Console.WriteLine("2"); *@
         var str = await GetPswFromDbById(accountid);
         errormsg += str;
@@ -106,6 +107,7 @@ else
             //await ProtectedSessionStore.SetAsync("LoginState", false);
             return;
         }
+        errormsg+="Login Success & will return to index after 3s";
         //log = "true";
         await ProtectedSessionStore.SetAsync("LoginState", true);
         await ProtectedSessionStore.SetAsync("PersonId", accountid);
@@ -115,6 +117,8 @@ else
         await GetSessionValue();
 
         StateHasChanged();
+        Thread.Sleep(3000);
+        NavigationManager.NavigateTo("/");
     }
     async Task Logout()
     {

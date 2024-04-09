@@ -15,6 +15,7 @@ public class DepartmentController(HttpClient httpClient)
 
     public async Task<List<Department>?> GetByIdAsync(int id)
     {
+        Console.WriteLine(ApiUri + "Departments" + "/" + id);
         return
         await _httpClient
         .GetFromJsonAsync<List<Department>>
