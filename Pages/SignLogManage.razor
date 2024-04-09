@@ -19,7 +19,13 @@
         <td>@context.Exit</td>
     </RowTemplet>
     <ContentTemplet>
+        <td>/
         <span>PersonId:@Idstr</span>
+        </td>
+
+        <td>/
+        <span>Right:@Rightstr</span>
+        </td>
     </ContentTemplet>
 </ListComponent>
 
@@ -28,6 +34,7 @@
 @inject IHttpClientFactory client
 @code {
     string Idstr="";
+    string Rightstr="";
     string errorMsgstr = "";
     List<SignLog> loglist = [];
     Controller.DaoController? Dc;
@@ -50,8 +57,10 @@
             }
             Idstr=result.Value.ToString();
             await GetAllById(result.Value);
-
+            result = await ProtectedSessionStore.GetAsync<int>("Right");
+            Rightstr= result.Value.ToString();
         }
+
         //return base.OnAfterRenderAsync(firstRender);
     }
 

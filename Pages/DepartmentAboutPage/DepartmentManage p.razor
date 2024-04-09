@@ -7,10 +7,10 @@ departmentPage
     public int requestId { get; set; } = 0;
     int SearchId;
     List<Department>? DeptDataList;
-    static HttpClient httpclient = new()
+    @* static HttpClient httpclient = new()
         {
             BaseAddress = new Uri("http://localhost:5198/"),
-        };
+        }; *@
     @* Controller.DaoController dc = new(httpclient); *@
     Controller.DaoController? Dc; 
     String errormsg = "";

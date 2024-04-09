@@ -13,7 +13,26 @@
         </div>
 
         <article class="content px-4" >
-            @Body
+            @* <PageHeader Class="site-page-header" Title="test" Subtitle="This is a subtitle" />
+            <br /> *@
+            @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+            @inject ProtectedSessionStorage ProtectedSessionStore;
+            @inject NavigationManager NavigationManager
+            @inject IHttpClientFactory httpClient;
+            @{
+                string BaseUri = NavigationManager.BaseUri;
+                string Uri = NavigationManager.Uri;
+                string blacklist=httpClient.CreateClient("client_1").BaseAddress+"counter";
+                //await ProtectedSessionStore.SetAsync("Right", 0);
+                var a = ProtectedSessionStore.GetAsync<int>("Right");
+                //int pageRight=
+            }
+            ; @Uri ;right @a  @blacklist
+            @if(Uri==blacklist){
+                <h1>Sorry You Have No right to be here. </h1>
+            }else{
+                @Body
+            }
         </article>
     </main>
 </div>

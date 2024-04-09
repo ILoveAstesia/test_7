@@ -1,8 +1,19 @@
 # Current:
 ---
 bug:
-登出依旧显示signlog
-department p 传输大于等于2的值会死循环
+[ ]登出依旧显示signlog
+// [x]department p 传输大于等于2的值会死循环
+
+bug fix
+4/10
+1. department p 实现的是依据 传入人员 id 查找对应部门，但是实际实现的效果是 依据找到和传入人员id值相同的id部门。修复了逻辑bug
+2. 修复了signlogtep无法持续化的问题
+3. 添加了thankyou
+4. 添加提示 index 无法找到temp
+
+使用权限
+权限判断
+可以在shared里？
 
 完成绩效管理
 1. 考勤

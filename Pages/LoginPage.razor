@@ -107,19 +107,35 @@ else
             //await ProtectedSessionStore.SetAsync("LoginState", false);
             return;
         }
-        errormsg+="Login Success & will return to index after 3s";
+        errormsg+="Login Success & will return to index after now";
         //log = "true";
+
+        //var info = await GetAccountInfoFromDbById(accountid);
+
         await ProtectedSessionStore.SetAsync("LoginState", true);
         await ProtectedSessionStore.SetAsync("PersonId", accountid);
+        //info.Right.
         await ProtectedSessionStore.SetAsync("Right", 0);
         //await ProtectedSessionStore.SetAsync("Name", 0);
         //无法确保输入正确的值
         await GetSessionValue();
 
         StateHasChanged();
-        Thread.Sleep(3000);
+        //await nvitoindex();
         NavigationManager.NavigateTo("/");
+
     }
+
+    @* async Task<Accountinfo> GetAccountInfoFromDbById(int Id){
+        var a = await Dc!.GetOneOwnPropertyAsync<List<Accountinfo>>("Accountinfos/", Id);
+        var b = a.FirstOrDefault<Accountinfo>();
+        return b;
+    } *@
+    //硬控3秒
+
+    @* async void nvitoindex(){
+        await Thread.Sleep(3000);
+    } *@
     async Task Logout()
     {
         //log="false";
