@@ -1,6 +1,9 @@
 @page "/SignLogPage"
 @using test_7.Model;
 
+@{
+    int sumtime=0;
+}
 <ErrorMsg errormsg=@errorMsgstr></ErrorMsg>
 @* <ListComponent Name="Department" ItemType="Department" DataList="DeptDataList"> *@
 
@@ -10,13 +13,33 @@
         <th>Id</th>
         <th>Arrived</th>
         <th>Exited</th>
-
+        <th>Long</th>
     </HeadTemplet>
     <RowTemplet>
         <td>/</td>
         <td>@context.Id</td>
-        <td>@context.Arrive</td>
-        <td>@context.Exit</td>
+        <td>
+            @context.Arrive
+            @{
+                
+            }
+        </td>
+        <td>
+            @context.Exit
+            @{
+                
+            }
+        </td>
+        <td>
+            @{
+                DateTime exi =context.Exit;
+                DateTime arr =context.Arrive;
+                var gap = exi-arr;
+                var time = (int)gap.TotalSeconds;
+                sumtime+=time;
+            }
+            @time
+        </td>
     </RowTemplet>
     <ContentTemplet>
         <td>/
@@ -26,6 +49,10 @@
         <td>/
         <span>Right:@Rightstr</span>
         </td>
+
+        <td></td>
+        <td></td>
+        <td>SumTime:@sumtime</td>
     </ContentTemplet>
 </ListComponent>
 
@@ -57,10 +84,11 @@
             }
             Idstr=result.Value.ToString();
             await GetAllById(result.Value);
-            result = await ProtectedSessionStore.GetAsync<int>("Right");
-            Rightstr= result.Value.ToString();
         }
 
+           var resultR = await ProtectedSessionStore.GetAsync<int>("Right");
+            Rightstr= resultR.Value.ToString();
+            StateHasChanged();
         //return base.OnAfterRenderAsync(firstRender);
     }
 

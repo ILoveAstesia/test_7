@@ -1,6 +1,6 @@
 @page "/Login/{Id:int}"
 @* @inject Accountinfo LoginState *@
-@inject IHttpClientFactory httpcient
+
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
 
@@ -23,7 +23,7 @@
     }
     bool LoginStatetem = false;
     //LoginState
-
+    
     async Task GetSessionValue()
     {
         var result = await ProtectedSessionStore.GetAsync<bool>("LoginState");
@@ -52,21 +52,8 @@
         <button @onclick="@(e=> errormsg="")" class=" btn-close "></button>
     </div>
 }
-<br />
-<span>
-    AccountId:
     <br />
-    <AntDesign.InputNumber TValue="Int32" @bind-Value=accountid>
-    </AntDesign.InputNumber>
-</span>
-<br />
-<span>
-    AccountPassword:
-    <br />
-    <InputText @bind-Value=accountpsw>
-    </InputText>
-</span>
-<br />
+
 
 @if (LoginStatetem == true)
 {
@@ -74,6 +61,20 @@
 }
 else
 {
+    <span>
+    AccountId:
+    <br />
+    <AntDesign.InputNumber TValue="Int32" @bind-Value=accountid>
+    </AntDesign.InputNumber>
+    </span>
+    <br />
+    <span>
+    AccountPassword:
+    <br />
+    <InputText @bind-Value=accountpsw>
+    </InputText>
+    </span>
+    <br />
     <Button @onclick="Login" Type="@ButtonType.Primary">Login</Button>
 
 }
@@ -87,7 +88,7 @@ else
 </Card>
 
 
-                
+@inject IHttpClientFactory httpcient  
 @inject NavigationManager NavigationManager;
 @code {
     int accountid = -2;
@@ -110,14 +111,16 @@ else
         errormsg+="Login Success & will return to index after now";
         //log = "true";
 
-        //var info = await GetAccountInfoFromDbById(accountid);
+        var info = await GetAccountInfoFromDbById(accountid);
 
         await ProtectedSessionStore.SetAsync("LoginState", true);
         await ProtectedSessionStore.SetAsync("PersonId", accountid);
         //info.Right.
-        await ProtectedSessionStore.SetAsync("Right", 0);
+        await ProtectedSessionStore.SetAsync("Right", info.Right);
+        //await ProtectedSessionStore.SetAsync("Name", );
         //await ProtectedSessionStore.SetAsync("Name", 0);
         //无法确保输入正确的值
+        //为什么要获取值？是为了刷新吗？
         await GetSessionValue();
 
         StateHasChanged();
@@ -126,11 +129,13 @@ else
 
     }
 
-    @* async Task<Accountinfo> GetAccountInfoFromDbById(int Id){
-        var a = await Dc!.GetOneOwnPropertyAsync<List<Accountinfo>>("Accountinfos/", Id);
-        var b = a.FirstOrDefault<Accountinfo>();
-        return b;
-    } *@
+    async Task<Accountinfo> GetAccountInfoFromDbById(int Id){
+        Dc = new(httpcient);
+        
+        var a = await Dc.GetOneOwnPropertyAsync<List<Accountinfo>>("Accountinfos", Id);
+        Accountinfo? b = a!.FirstOrDefault();
+        return b!;
+    }
     //硬控3秒
 
     @* async void nvitoindex(){
@@ -139,6 +144,10 @@ else
     async Task Logout()
     {
         //log="false";
+        //await ProtectedSessionStore.SetAsync("LoginState", true);
+        //info.Right.
+        await ProtectedSessionStore.SetAsync("PersonId", 0);
+        await ProtectedSessionStore.SetAsync("Right", 0);
         await ProtectedSessionStore.SetAsync("LoginState", false);
         StateHasChanged();
     }

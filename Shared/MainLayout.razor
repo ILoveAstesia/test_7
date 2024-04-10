@@ -24,10 +24,11 @@
                 string Uri = NavigationManager.Uri;
                 string blacklist=httpClient.CreateClient("client_1").BaseAddress+"counter";
                 //await ProtectedSessionStore.SetAsync("Right", 0);
-                var a = ProtectedSessionStore.GetAsync<int>("Right");
+                var rightT = ProtectedSessionStore.GetAsync<int>("Right");
                 //int pageRight=
             }
-            ; @Uri ;right @a  @blacklist
+            ; @Uri ;Right: @rightT  BlockUrl:@blacklist
+            <br />
             @if(Uri==blacklist){
                 <h1>Sorry You Have No right to be here. </h1>
             }else{

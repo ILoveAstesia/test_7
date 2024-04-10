@@ -1,16 +1,10 @@
 ﻿@page "/"
 @using AntDesign
 
-@* 
-<Button @onclick="@(e=>{NavigationManager.NavigateTo("/Person");})">Back</Button>
-<Button @onclick="@(e=>{NavigationManager.NavigateTo("/");})">Return home</Button> 
-*@
+
 
 <ErrorMsg errormsg=@errstr></ErrorMsg>
-@* @inject String str
-<h1>@str</h1>
-src="shopping-8042865.svg"
-*@
+
 
 <Card Style="width: 95%;" BodyStyle="padding: 0; overflow: hidden;">
     <Flex Justify="space-between">
@@ -35,18 +29,7 @@ src="shopping-8042865.svg"
                 }
             }
         </Flex>
-@* 
-        <GridRow Gutter="450" Style="margin-top:0">
 
-            <GridCol Span="8">
-
-
-            </GridCol>
-            <GridCol Span="8">
-
-
-            </GridCol>
-        </GridRow> *@
                 <Card Hoverable Title=@("二月") Style="width: 300px;margin:1%">
                     <p>樊志安 22/31</p>
                     <p>罗维 30/31</p>
@@ -61,84 +44,12 @@ src="shopping-8042865.svg"
 
 </Card>
 
-@*
-<Card Style="width: 75%;" BodyStyle="padding: 0; overflow: hidden;">
-<Flex Justify="space-between">
-<img alt="avatar"
-src="shopping-8042865.svg"
-style="width:50%;" />
-
-<Flex Vertical Align="flex-end" Justify="space-between" Style="padding: 32px;">
-<Title Level="3">
-“antd is an enterprise-class UI design language and React UI library.”
-</Title>
-
-
-</Flex>
-<Card Hoverable Title=@("二月") Style="width: 300px;">
-<p>樊志安 22/31</p>
-<p>罗维 30/31</p>
-<p>徐昌坤 8/31</p>
-</Card>
-<Card Hoverable Title=@("三月") Style="width: 300px;">
-<p>樊志安 26/30</p>
-<p>罗维 30/30</p>
-<p>徐昌坤 8/30</p>
-</Card>
-</Flex>
-
-
-</span>
-
-</Card> *@
-@* <Space Direction="DirectionVHType.Vertical">
-<SpaceItem>
-
-
-</SpaceItem>
-<SpaceItem>
-
-</SpaceItem>
-</Space> *@
-
-
-
-<Button @onclick="thank" Type="@ButtonType.Primary">Thank you</Button>
-@using static Console
-@code{
-        void thank(){
-            WriteLine(
-                "THANK!"
-                );
-        }
-    }
-
-二月
-樊志安 22/31
-罗维 30/31
-徐昌坤 8/31
-
-三月
-樊志安 26/30
-罗维 30/30
-徐昌坤 8/30
-
-今天
-樊志安 [已签到]
-罗维 [Null]
-徐昌坤 [NoPlan]
-@* @using AntDesign.Charts
-@using Title = AntDesign.Charts.Title *@
-
-
-
-
-@* <button @onclick="PersonArrived" class="btn-primary">check in</button> *@
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
 @inject ProtectedSessionStorage ProtectedSessionStore
-@* @inject Controller.DaoController Dc *@
 @inject IHttpClientFactory httpclientfactory
+
 @code {
 
     @* bool Exitalert=false; *@
@@ -222,6 +133,107 @@ style="width:50%;" />
 
 }
 
-@*
+
+@* 
+        <GridRow Gutter="450" Style="margin-top:0">
+
+            <GridCol Span="8">
+
+
+            </GridCol>
+            <GridCol Span="8">
+
+
+            </GridCol>
+        </GridRow> *@
+
+
+@* @inject String str
+<h1>@str</h1>
+src="shopping-8042865.svg"
+*@
+
+@* 
+<Button @onclick="@(e=>{NavigationManager.NavigateTo("/Person");})">Back</Button>
+<Button @onclick="@(e=>{NavigationManager.NavigateTo("/");})">Return home</Button> 
+*@
+
+@* @inject Controller.DaoController Dc *@
+@* <button @onclick="PersonArrived" class="btn-primary">check in</button> *@
+
+@*-----------
 <button>Sign</button>
 <button>Sign in</button> *@
+
+@*
+<Card Style="width: 75%;" BodyStyle="padding: 0; overflow: hidden;">
+<Flex Justify="space-between">
+<img alt="avatar"
+src="shopping-8042865.svg"
+style="width:50%;" />
+
+<Flex Vertical Align="flex-end" Justify="space-between" Style="padding: 32px;">
+<Title Level="3">
+“antd is an enterprise-class UI design language and React UI library.”
+</Title>
+
+
+</Flex>
+<Card Hoverable Title=@("二月") Style="width: 300px;">
+<p>樊志安 22/31</p>
+<p>罗维 30/31</p>
+<p>徐昌坤 8/31</p>
+</Card>
+<Card Hoverable Title=@("三月") Style="width: 300px;">
+<p>樊志安 26/30</p>
+<p>罗维 30/30</p>
+<p>徐昌坤 8/30</p>
+</Card>
+</Flex>
+
+
+</span>
+
+</Card> *@
+
+@* <Space Direction="DirectionVHType.Vertical">
+<SpaceItem>
+
+
+</SpaceItem>
+<SpaceItem>
+
+</SpaceItem>
+</Space> *@
+
+
+@*
+
+
+<Button @onclick="thank" Type="@ButtonType.Primary">Thank you</Button>
+@using static Console
+@code{
+        void thank(){
+            WriteLine(
+                "THANK!"
+                );
+        }
+    }
+
+二月
+樊志安 22/31
+罗维 30/31
+徐昌坤 8/31
+
+三月
+樊志安 26/30
+罗维 30/30
+徐昌坤 8/30
+
+今天
+樊志安 [已签到]
+罗维 [Null]
+徐昌坤 [NoPlan]
+@* @using AntDesign.Charts
+@using Title = AntDesign.Charts.Title *@
+
