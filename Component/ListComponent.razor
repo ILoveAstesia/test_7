@@ -13,11 +13,13 @@
 else
 {
     <table class="table">
+
         <thead>
             <tr>
                 @HeadTemplet
             </tr>
         </thead>
+
         <tbody>
             @if(RowTemplet is not null){
                 @foreach (var item in DataList)
@@ -40,6 +42,7 @@ else
             }
             
         </tfoot>
+        
     </table>
 }
 
@@ -53,14 +56,14 @@ else
     [Parameter] public RenderFragment<ItemType>? RowTemplet { get; set; }
     [Parameter] public RenderFragment? HeadTemplet { get; set; }
     @* protected override void OnAfterRender(bool firstRender)
-{
-if (firstRender)
-{
-//System.Threading.Thread.Sleep(300);
-forcasts = Data;
-StateHasChanged();
+    {
+    if (firstRender)
+    {
+    //System.Threading.Thread.Sleep(300);
+    forcasts = Data;
+    StateHasChanged();
 
-}
+    }
 } *@
 
 }

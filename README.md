@@ -6,57 +6,55 @@ Mysql 8.0 or above
 ---
 bug:
 [ ]登出依旧显示signlog
+ToDo
+[ ]保存到session，但没有app
+[ ]统一dao层 type reflection
+[x]department p 传输大于等于2的值会死循环
+[ ]在前端写一个function，使得调用controller更加简单
+现在是
+   var a = await Dc.GetOneOwnPropertyAsync<List<Accountinfo>>("Accountinfos", Id);
+        Accountinfo? b = a!.FirstOrDefault();
+        return b!;
 
-保存到session，但没有app
-统一dao层 type reflection
-// [x]department p 传输大于等于2的值会死循环
+我希望是
 
 
+   
+        return await Dc.GetOneOwnPropertyAsync(2,2,3); //获取两个属性，第三个和第四个 或者第二个和第三个 取决实现方法
 
 使用权限
 权限判断
 可以在shared里？
-
-
-
-完成绩效管理
-1. 考勤
-   1. 签到
-      1. 增加log
-      2. 记录时间
-   2. 签退
-      1. 记录时间
-      2. 提示时常
-   3. 
-   4. 请假
-   5. -课时-
-2. 薪资
-   1.  
-完成主页的信息展示功能
-1. 课表
-   2. 器材备注
-2. 签到表
-3. 请假表
-4. 
 ---
+# handbook
+如何添加一个新crud界面
 
-- [x] dept
-- [x] w
-- [X] 登录 权限管理
+1. 确定模型类
+public class TODOClass
+{
+    public int Id { set; get; }//注意set get
+    //property
+}
 
-- [x] 员工信息档案管理模块
-- [x] 组织管理模块
-绩效管理模块
-人事模块 
-- [ ] 工资模块
-合同模块
-培训模块
+2. 在context中声明
+public DbSet<TODOClass> TODOClasses { get; set; }
+
+3. 在侧边栏添加一个导航栏
+   <div class="nav-item px-3">
+      <NavLink class="nav-link" href="ToDoPage">
+            <span class="oi oi-list-rich" aria-hidden="true"></span> To Do 
+      </NavLink>
+   </div>
+
+4. 添加一个界面
+   @page "/ToDoPage"
+
+   List Component todo...
+
+5. 实现DAO层
 
 
----
-只搭建框架,不考虑细节
-
-填充优先
+6. 
 
 ---
 # Plan
@@ -81,8 +79,49 @@ bug:
 11. 程序关闭好慢
 12. 网页夹加载时initializer加载过于耗时700ms
 13. 
-14. 
+14. 完成绩效管理
+    1. 考勤
+       1. 签到
+          1. 增加log
+          2. 记录时间
+       2. 签退
+          1. 记录时间
+          2. 提示时常
+       3. 
+       4. 请假
+       5. -课时-
+    2. 薪资
+       1.  
+    完成主页的信息展示功能
+    3. 课表
+       1. 器材备注
+    4. 签到表
+    5. 请假表
+    6. 
+15. 
 
+
+---
+
+- [x] dept
+- [x] w
+- [X] 登录 权限管理
+
+- [x] 员工信息档案管理模块
+- [x] 组织管理模块
+绩效管理模块
+人事模块 
+- [ ] 工资模块
+合同模块
+培训模块
+
+
+---
+只搭建框架,不考虑细节
+
+填充优先
+
+---
 # 更新日志
 log
 ## 2 19

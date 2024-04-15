@@ -20,6 +20,7 @@ public class AccountDAO
     [HttpGet]
     public async Task<List<Accountinfo>> GetAllAsync()
     {
+        Console.WriteLine("GetAllAccountinfo");
         return await _db.Accountinfos.ToListAsync();
     }
 

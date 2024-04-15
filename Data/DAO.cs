@@ -8,7 +8,7 @@ namespace test_7.Data;
 public class DataAccessObject(test_7Context db)//where T : class
 {
     readonly test_7Context _db=db ;
-
+//如何通过request的参数例如strin来判断类型
     // [HttpGet("{typeName}", Name = "GetforAll")]
     // [ActionName("GetAll")]
     // public async  dynamic  GetAllAsync(String typeName){

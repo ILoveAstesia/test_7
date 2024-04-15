@@ -1,0 +1,87 @@
+@page "/AccountInfoPage"
+
+AccountInfoPage
+
+<ErrorMsg errormsg=@errorMsgstr></ErrorMsg>
+@* <ListComponent Name="Department" ItemType="Department" DataList="DeptDataList"> *@
+
+<ListComponent Name="Accountinfolist" ItemType=Accountinfo DataList=Accountinfolist>
+    <HeadTemplet>
+        <th>Id</th>
+        <th>Password</th>
+        <th>Right</th>
+
+    </HeadTemplet>
+    <RowTemplet>
+        <td>@context.Id</td>
+        <td>@context.Password</td>
+        <td>
+            @context.Right
+        </td>
+    </RowTemplet>
+    <ContentTemplet>
+        <td>/
+        <span></span>
+        </td>
+
+        <td>/
+        <span></span>
+        </td>
+
+        <td></td>
+        <td></td>
+        <td></td>
+    </ContentTemplet>
+</ListComponent>
+
+
+@inject Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage.ProtectedSessionStorage ProtectedSessionStore
+@inject IHttpClientFactory client
+@code {
+    string errorMsgstr = "";
+    List<Accountinfo>? Accountinfolist = [];
+    Controller.DaoController? Dc;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Accountinfolist = await GetAll();
+        }
+
+            StateHasChanged();
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task<List<Accountinfo>?> GetAll(){
+        Dc = new(client);
+        var result = await Dc.GetAllAsync<Accountinfo>("Accountinfos");
+        return result;
+    }
+
+    /*
+    async Task GetAllById(int Id)
+    {
+        
+        Dc = new(client);
+
+        var result = await Dc.GetOwnPropertyAsync<Accountinfo>("SignLogs", Id);
+
+        if (result is null)
+        {
+            errorMsgstr = "result is null";
+            return;
+        }
+
+        loglist = result;
+
+        StateHasChanged();
+        //return
+    }
+    */
+}
