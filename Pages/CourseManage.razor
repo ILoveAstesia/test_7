@@ -1,0 +1,43 @@
+@page "/CoursePage"
+
+<ListComponent ItemType="Course" DataList="CourseList" Name="课程">
+<HeadTemplet>
+    <th>Id</th>
+    <th>Level</th>
+    <th>CurrentClazz</th>
+    <th>PresentStudents</th>
+    <th>Time</th>
+    <th>State</th>
+</HeadTemplet>
+<RowTemplet>
+    <td>@context.Id</td>
+    <td>@context.Level</td>
+    <td>@context.CurrentClazz</td>
+    <td>@context.PresentStudents</td>
+    <td>@context.Time</td>
+    <td>@context.State</td>
+</RowTemplet>
+<ContentTemplet></ContentTemplet>
+</ListComponent>
+@inject IHttpClientFactory client
+@code{
+    List<Course>? CourseList;
+    Controller.DaoController? Dc;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+        if(firstRender){
+            CourseList = await GetAll();
+        }
+        StateHasChanged();
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task<List<Course>?> GetAll(){
+        Dc = new(client);
+        var result = await Dc.GetAllAsync<Course>("Courses");
+            //Thread.Sleep(3000);//测试异步加载
+        return result;
+        //return 
+    }
+
+}

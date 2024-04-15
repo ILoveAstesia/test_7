@@ -1,0 +1,51 @@
+@page "/ClassPage"
+
+<ListComponent ItemType="Class" DataList="ClassList" Name="Clazzss">
+    <HeadTemplet>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Date</th>
+        <th>PlanedCourse</th>
+        <th>Teachers</th>
+        <th>Students</th>
+    </HeadTemplet>
+    <RowTemplet>
+        <td>@context.Id</td>
+        <td>@context.Name</td>
+        <td>@context.Location</td>
+        <td>@context.Date</td>
+        <td>@context.PlanedCourse</td>
+        <td>@context.Teachers</td>
+        <td>@context.Students </td>
+    </RowTemplet>
+    <ContentTemplet></ContentTemplet>
+</ListComponent>
+
+
+@* @inject Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage.ProtectedSessionStorage ProtectedSessionStore *@
+@inject IHttpClientFactory client
+@code{
+    List<Class>? ClassList;
+
+    Controller.DaoController? Dc;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ClassList = await GetAll();
+        }
+
+            StateHasChanged();
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task<List<Class>?> GetAll(){
+        Dc = new(client);
+        var result = await Dc.GetAllAsync<Class>("Classes");
+            //Thread.Sleep(3000);//测试异步加载
+        return result;
+        //return 
+    }
+
+}

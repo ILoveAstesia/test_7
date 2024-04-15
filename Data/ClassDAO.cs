@@ -20,6 +20,7 @@ public class ClassDAO
     [HttpGet]
     public async Task<List<Class>> GetAllAsync()
     {
+        Console.WriteLine("ClassGetAllAsync");
         return await _db.Clazzs.ToListAsync();
     }
 

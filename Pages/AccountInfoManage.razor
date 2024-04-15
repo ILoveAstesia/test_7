@@ -39,7 +39,7 @@ AccountInfoPage
 @inject IHttpClientFactory client
 @code {
     string errorMsgstr = "";
-    List<Accountinfo>? Accountinfolist = [];
+    List<Accountinfo>? Accountinfolist;
     Controller.DaoController? Dc;
     protected override void OnInitialized()
     {
@@ -61,6 +61,7 @@ AccountInfoPage
     async Task<List<Accountinfo>?> GetAll(){
         Dc = new(client);
         var result = await Dc.GetAllAsync<Accountinfo>("Accountinfos");
+            Thread.Sleep(3000);//测试异步加载
         return result;
     }
 
