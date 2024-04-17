@@ -1,7 +1,8 @@
 ﻿@page "/"
 @using AntDesign
 
-
+<!-- #region  teaching-->
+@* 
 
 <ErrorMsg errormsg=@errstr></ErrorMsg>
 
@@ -52,7 +53,7 @@
 
 @code {
 
-    @* bool Exitalert=false; *@
+
     string name = "樊志安";
     //int Personid=-2;
     bool Signed = false;
@@ -119,7 +120,7 @@
     {
         //Signed=true;
         //Exitalert=true;
-        @* Signed = false; *@
+
 
         SignLogTEM.Exit = DateTime.Now;
         Controller.DaoController Dc = new(httpclientfactory);
@@ -131,7 +132,11 @@
         StateHasChanged();
     }
 
-}
+} *@
+
+<!-- #endregion  teaching-->
+
+<!-- #region -->
 
 
 @* 
@@ -237,3 +242,4 @@ style="width:50%;" />
 @* @using AntDesign.Charts
 @using Title = AntDesign.Charts.Title *@
 
+<!-- #endregion -->

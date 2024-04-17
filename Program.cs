@@ -1,3 +1,4 @@
+using ehrms.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
@@ -40,9 +41,19 @@ builder.Services.AddSingleton<Accountinfo>();
 //builder.Services.AddSingleton<DaoService<Type>>();
 
 //conect to my sql
-builder.Services.AddDbContext<test_7Context>(opt =>
+// builder.Services.AddDbContext<test_7Context>(opt =>
+// {
+//     var cs=builder.Configuration.GetConnectionString("MySqlLapTop");
+//     if(cs==null){
+//         Console.WriteLine("conectionString is null");
+//         Environment.Exit(0);
+//     }
+//     opt.UseMySQL(cs);
+// });
+
+builder.Services.AddDbContext<EhrmsContext>(opt =>
 {
-    var cs=builder.Configuration.GetConnectionString("MySqlLapTop");
+    var cs=builder.Configuration.GetConnectionString("MySqlLapTopOverWrite");
     if(cs==null){
         Console.WriteLine("conectionString is null");
         Environment.Exit(0);
@@ -57,18 +68,17 @@ builder.Services.AddAntDesign();
 var app = builder.Build();
 
 
-
 //add seeding service
 /*
 */
 var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
 using (var scope = scopeFactory.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<test_7Context>();
-    if (db.Database.EnsureCreated() || !db.Persons.Any() )
+    var db = scope.ServiceProvider.GetRequiredService<EhrmsContext>();
+    if (db.Database.EnsureCreated() || !db.Employees.Any() )
     {
         
-        SeedData.Initialize(db);
+        EhrmsSeedData.Initialize(db);
     }
 }
 
