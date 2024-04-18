@@ -4,7 +4,7 @@
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
-
+@using AntDesign
         @{
 
             bool LoginState = false;
@@ -15,10 +15,13 @@
             hrefString += "/" + currentId;
             if (LoginState == false)
             {
-                <button class=" btn-success"><a href=@hrefString class=" btn-success">Login now!</a></button>
+            <NavLink  href="" >
+                <Button Type="@ButtonType.Primary" class=" btn-success">登录</Button>
+            </NavLink>
             }
-            
         }
+        @* <a href=@hrefString class=" btn-success">登录</a> *@
+            
 
     </div>
 </div>
@@ -37,13 +40,16 @@
             </NavLink>
         </div>
 
+
+<!-- #region old-->
+
         @* <div class="nav-item px-3">
         <NavLink class="nav-link" href="fetchdata">
         <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
         </NavLink>
         </div> *@
 
-        <div class="nav-item px-3">
+        @* <div class="nav-item px-3">
             <NavLink class="nav-link" href="departmentPage">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> To Do Department
             </NavLink>
@@ -78,8 +84,8 @@
             <NavLink class="nav-link" href="CoursePage">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> CourseInfoPage 
             </NavLink>
-        </div>
-        
+        </div> *@
+        <!-- #endregion old-->
 
     </nav>
 </div>

@@ -1,0 +1,96 @@
+@page "/EmployeePage";
+
+@using ehrms.Model
+@using System.ComponentModel
+@using AntDesign.TableModels
+@* @using AntDesign *@
+
+<Table  @ref="table"
+        TItem="ehrms.Model.Employee"
+        DataSource="@EmployeeList"
+        @bind-PageIndex="_pageIndex"
+        @bind-PageSize="_pageSize"
+        @bind-SelectedRows="selectedRows"
+        Size="TableSize.Small"
+        RowKey="x=>x.Id"
+      >
+    <Selection Key="@(context.Id.ToString())" />
+    <PropertyColumn Property="c=>c.Id" Sortable Title="工号" />
+    <PropertyColumn Property="c=>c.Name"  Title="姓名"/>
+    <PropertyColumn Property="c=>c.Level_right"  Sortable Title="等级"/>
+    <PropertyColumn Property="c=>c.Gender"  Title="性别"/>
+    <ActionColumn Title="Action">
+    <Space>
+      @* <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">Delete</Button></SpaceItem> *@
+      <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">Delete</Button></SpaceItem>
+    </Space>
+  </ActionColumn>
+</Table>
+
+<Button OnClick="()=> { _pageIndex--; }">Previous page</Button>
+<Button OnClick="()=> { _pageIndex++; }">Next Page</Button>
+
+<br />
+<p>PageIndex: @_pageIndex | PageSize: @_pageSize | Total: @_total</p>
+
+<br />
+<h5>selections:</h5>
+@if (selectedRows != null && selectedRows.Any())
+{
+  <Button Danger Size="small" OnClick="@(e => { selectedRows = null; })">Clear</Button>
+
+  @foreach (var selected in selectedRows)
+  {
+    <Tag @key="selected.Id" Closable OnClose="e=>RemoveSelection(selected.Id)" >@selected.Id - @selected.Name</Tag>
+  }
+  @*  *@
+}
+
+
+
+@using System.Text.Json;
+@code{
+  void RemoveSelection(int id){
+    var selected = selectedRows!.Where(x => x.Id != id);
+    selectedRows = selected;
+  }
+  void Delete(int id){
+
+  }
+  int _pageIndex = 1;
+  int _pageSize = 10;
+  int _total = 0;
+  IEnumerable<ehrms.Model.Employee>? selectedRows;
+  ITable? table;
+  public void OnChange(QueryModel<ehrms.Model.Employee> queryModel)
+  {
+  Console.WriteLine(JsonSerializer.Serialize(queryModel));
+  }
+
+}
+
+@inject IHttpClientFactory client
+
+@code{
+
+    List<ehrms.Model.Employee>? EmployeeList;
+    Controller.DaoController? Dc;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+        if(firstRender){
+            EmployeeList = await GetAll();
+        }
+        StateHasChanged();
+        //return base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task<List<ehrms.Model.Employee>?> GetAll(){
+        Dc = new(client);
+        var result = await Dc.GetAllAsync<ehrms.Model.Employee>("Employees");
+            //Thread.Sleep(3000);//测试异步加载
+        return result;
+        //return 
+    }
+
+
+}
