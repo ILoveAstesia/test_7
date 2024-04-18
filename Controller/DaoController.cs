@@ -50,6 +50,20 @@ public class DaoController
 
     }
 
+    public async Task<T?> GetByIdAsync<T>(String page,string id) where T : class
+    {
+
+        //var a =typeof(T);
+        Console.WriteLine(apiurl + "DAOs/" + page+"/"+id);
+        //T.toString();
+        var result = await Client.GetFromJsonAsync<T>(apiurl + "DAOs/" + page+"/"+id);
+        if (result is null){
+            return null;
+        }
+        return result;
+
+    }
+
     public async Task<List<T>?> GetOwnPropertyAsync<T>(string PropertyPage, int id) where T : class
     {
         Console.WriteLine(apiurl + "DAOs/" + PropertyPage + "/" + id);

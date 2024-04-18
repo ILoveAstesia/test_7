@@ -20,8 +20,17 @@ public class EmployeeDAO {
     }
 
     [HttpGet("{id}")]
-    public async Task<Employee?> GetByIdAsync(int id){
-        return await _db.Employees.Where(p => p.Id == id).FirstOrDefaultAsync();
+    public async Task<Employee?>? GetByIdAsync(int id){
+        var result = await _db.Employees.Where(p => p.Id == id).FirstOrDefaultAsync();
+        if (result is null){
+            Employee empnull = new()
+            {
+                Name = "未找到数据",
+                Gender="",
+            };
+            return empnull;
+        }
+        return result;
         
     }
     ///DAOs/Persons/Departments/1
