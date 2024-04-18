@@ -58,6 +58,7 @@ public class DaoController
         //T.toString();
         var result = await Client.GetFromJsonAsync<T>(apiurl + "DAOs/" + page+"/"+id);
         if (result is null){
+            Console.WriteLine("------NULL CONTENT------");
             return null;
         }
         return result;
