@@ -1,1 +1,214 @@
 @page "/Recruitmentpage"
+
+
+@using ehrms.Model
+@using System.ComponentModel
+@using AntDesign.TableModels
+
+<br />
+<p>目前是第 @_pageIndex 页 | 目前分页大小为: @_pageSize | 查询到 @_total 条数据 </p>
+
+<Input Placeholder="请输入ID" @bind-Value="@idstr"  Style="width: 20%;" />
+<Button OnClick=GetById>搜索</Button>
+<Button OnClick=OnInitializedAsync Type="danger">刷新</Button>
+<Button OnClick="@ShowModal" Type="@ButtonType.Primary">添加</Button>
+<Button OnClick="()=> { _pageIndex--; }">上一页</Button>
+<Button OnClick="()=> { _pageIndex++; }">下一页</Button>
+<br />
+
+@{
+    RenderFragment footer = @<Template>
+    <Button OnClick="@HandleOk" @key="@( "submit" )"
+            Type="primary"
+            Loading="@_loading">
+        提交
+    </Button>
+    <Button OnClick="@HandleCancel" @key="@( "back" )">返回</Button>
+</Template>;
+}
+
+<Modal Title="@title"
+       Visible="@_visible"
+       OnOk="@HandleOk"
+       OnCancel="@HandleCancel"
+       Footer="@footer">
+
+候选人编号
+<Input @bind-Value=titem.Id />意向部门
+<Input @bind-Value=titem.Department />意向职位
+<Input @bind-Value=titem.Demand />期望工资
+<Input @bind-Value=titem.DemandNumber />面试状态
+<Input @bind-Value=titem.State />
+</Modal>
+
+
+@code{
+    ehrms.Model.Recruitment titem = new();
+    string title="添加";
+    bool _visible = false;
+    bool _loading = false;
+    private void ShowModal()
+    {
+        
+        _visible = true;
+    }
+
+    private void HandleOk(MouseEventArgs e)
+    {
+        _loading = true;
+
+        var result = RecruitmentList!.Where(p => p.Id == titem.Id).FirstOrDefault();
+        if (result is not null){
+          //return;
+        RecruitmentList!.Remove(result);
+        } 
+       
+        
+        _visible = false;
+
+        RecruitmentList!.Add(titem);
+        titem = new();
+        _loading = false;
+    }
+
+    private void HandleCancel(MouseEventArgs e)
+    {
+        _visible = false;
+    }
+}
+
+
+
+<Table  @ref="table"
+        TItem="ehrms.Model.Recruitment"
+        DataSource="@RecruitmentList"
+        @bind-PageIndex="_pageIndex"
+        @bind-PageSize="_pageSize"
+        @bind-SelectedRows="selectedRows"
+        OnChange="OnChange"
+        Size="TableSize.Small"
+        RowKey="x=>x.Id"
+      >
+    <Selection Key="@(context.Id.ToString())" />
+    <PropertyColumn Property="c=>c.Id" Sortable Title="候选人编号" />
+    <PropertyColumn Property="c=>c.Department" Sortable Title="意向部门" />
+    <PropertyColumn Property="c=>c.Demand" Sortable Title="意向职位" />
+    <PropertyColumn Property="c=>c.DemandNumber" Sortable Title="期望工资" />
+    <PropertyColumn Property="c=>c.State" Sortable Title="面试状态" />
+
+    <ActionColumn Title="操作">
+    <Space>
+      <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">删除</Button></SpaceItem>
+      <SpaceItem><Button OnClick="()=>Update(context.Id)" >更改</Button></SpaceItem>
+    </Space>
+  </ActionColumn>
+
+</Table>
+
+@code{
+  void Update(int id){
+    if(RecruitmentList is null)
+    {return;}
+    var result = RecruitmentList.Where(p => p.Id == id).FirstOrDefault();
+    if (result is null){
+      return;
+    }
+    titem = result;
+    ShowModal();
+  }
+}
+
+
+<br />
+<h5>选择列表:</h5>
+@if (selectedRows != null && selectedRows.Any())
+{
+
+  <Button Danger Size="small" OnClick="@(e => { selectedRows = null; })">Clear</Button>
+
+  @foreach (var selected in selectedRows)
+  {
+    <Tag @key="selected.Id" Closable OnClose="e=>RemoveSelection(selected.Id)" >@selected.Id </Tag>
+  }
+
+}
+
+
+@using System.Text.Json;
+@code{
+  void RemoveSelection(int id){
+    var selected = selectedRows!.Where(x => x.Id != id);
+    selectedRows = selected;
+  }
+  void Delete(int id){
+    if(RecruitmentList is null)
+    {return;}
+    var result = RecruitmentList.Where(p => p.Id == id).FirstOrDefault();
+    if (result is null){
+      return;
+    }
+    RecruitmentList.Remove(result);
+      //StateHasChanged();
+  }
+  int _pageIndex = 1;
+  int _pageSize = 5;
+  int _total = 0;
+  IEnumerable<ehrms.Model.Recruitment>? selectedRows;
+  ITable? table;
+  public void OnChange(QueryModel<ehrms.Model.Recruitment> queryModel)
+  {
+    //调试用
+    //Console.WriteLine(JsonSerializer.Serialize(queryModel));
+  }
+
+}
+
+@inject IHttpClientFactory client
+
+@code{
+
+    List<ehrms.Model.Recruitment>? RecruitmentList;
+    Controller.DaoController? Dc;
+
+  protected override async Task OnInitializedAsync()
+  {
+    RecruitmentList = await GetAll();
+    if(RecruitmentList is null)
+    {
+    Console.WriteLine("list is null");
+    }else{
+    _total = RecruitmentList.Count();
+    }
+  }
+
+
+
+    async Task<List<ehrms.Model.Recruitment>?> GetAll(){
+        Dc = new(client);
+        var result = await Dc.GetAllAsync<ehrms.Model.Recruitment>("Recruitments");
+            //Thread.Sleep(3000);//测试异步加载
+        return result;
+        //return 
+    }
+
+    string? idstr { get; set; }
+
+    async Task<List<ehrms.Model.Recruitment>?> GetById()
+    { 
+        if(idstr is null){
+          return null;
+        }
+        Dc=new(client);
+        List<ehrms.Model.Recruitment>? tlist = [];
+        var result = await Dc.GetByIdAsync<ehrms.Model.Recruitment>("Recruitments",idstr); 
+        if(result is null){
+          return null;
+        }
+        tlist.Add(result);
+        RecruitmentList=tlist;
+        StateHasChanged(); 
+        return tlist;
+        
+
+    }
+}

@@ -38,7 +38,7 @@ public class EhrmsContext : DbContext
     public DbSet<Recruitment> Recruitments { get; set; }
     public DbSet<Performance> Performances { get; set; }
     public DbSet<Payroll> Payrolls { get; set; }
-    public DbSet<Trainning> Trainnings { get; set; }
+    public DbSet<Training> Trainings { get; set; }
     public DbSet<Declaration> Declarations { get; set; }
     public DbSet<Document> Documents { get; set; }
     //public DbSet<DepartmentPerson> DepartmentPersons { get; set; }

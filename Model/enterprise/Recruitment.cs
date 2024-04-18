@@ -3,6 +3,7 @@ public class Recruitment{
     public int Id { get; set;}  
     public Department? Department{ get; set; }
     public string Demand { get; set; }="";
+    //薪资欲望DemandSalaryNumber
     public int DemandNumber { get; set; }=0;
     public StateType State { get; set;}
 }

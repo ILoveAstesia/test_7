@@ -6,7 +6,35 @@ blc1
 @code{
 
 }
+@* @page "/file-download-2" *@
+@inject IJSRuntime JS
 
+<PageTitle>File Download 2</PageTitle>
+
+<h1>File Download Example 2</h1>
+
+<button @onclick="DownloadFileFromURL">
+    Download File From URL
+</button>
+
+<script>
+  window.triggerFileDownload = (fileName, url) => {
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    //anchorElement.remove();
+  }
+</script>
+
+@code {
+    private async Task DownloadFileFromURL()
+    {
+        var fileName = "favicon.png";
+        var fileURL = "/favicon.png";//geometric-7719159.svg
+        await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+    }
+}
 
 <!-- #region  teaching-->
 @* 

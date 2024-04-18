@@ -32,9 +32,16 @@
        OnCancel="@HandleCancel"
        Footer="@footer">
 
-编号：
+部门编号
 <Input @bind-Value=titem.Id />
+<Input @bind-Value=titem.Name />部门名称
+<Input @bind-Value=titem.Description />职能简介
+<Input @bind-Value=titem.ParentDepartmentID />主管工号
+<Input @bind-Value=titem.DepartmentSize />部门大小
+<Input @bind-Value=titem.CreationDate />部门创建日期
+<Input @bind-Value=titem.Employees />员工列表
 
+    
 </Modal>
 
 
@@ -86,8 +93,13 @@
         RowKey="x=>x.Id"
       >
     <Selection Key="@(context.Id.ToString())" />
-    <PropertyColumn Property="c=>c.Id" Sortable Title="工号" />
-
+    <PropertyColumn Property="c=>c.Id" Sortable Title="部门编号" />
+<PropertyColumn Property="c=>c.Name" Sortable Title="部门名称" />
+<PropertyColumn Property="c=>c.Description" Sortable Title="职能简介" />  
+<PropertyColumn Property="c=>c.ParentDepartmentID" Sortable Title="主管工号" />
+<PropertyColumn Property="c=>c.DepartmentSize" Sortable Title="部门大小" />
+  <PropertyColumn Property="c=>c.CreationDate" Sortable Title="部门创建日期" />      
+      <PropertyColumn Property="c=>c.Employees" Sortable Title="员工列表" /> 
     <ActionColumn Title="操作">
     <Space>
       <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">删除</Button></SpaceItem>

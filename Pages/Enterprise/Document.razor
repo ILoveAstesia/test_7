@@ -32,9 +32,14 @@
        OnCancel="@HandleCancel"
        Footer="@footer">
 
-编号：
+文件编号：
 <Input @bind-Value=titem.Id />
-
+文件标题：
+<Input @bind-Value=titem.Title />
+文件路径：
+<Input @bind-Value=titem.Path />
+发布时间：
+<Input @bind-Value=titem.PublishDate />
 </Modal>
 
 
@@ -86,7 +91,10 @@
         RowKey="x=>x.Id"
       >
     <Selection Key="@(context.Id.ToString())" />
-    <PropertyColumn Property="c=>c.Id" Sortable Title="工号" />
+    <PropertyColumn Property="c=>c.Id" Sortable Title="文件编号" />
+    <PropertyColumn Property="c=>c.Title" Sortable Title="文件标题" />
+    <PropertyColumn Property="c=>c.Path" Sortable Title="文件路径" />
+    <PropertyColumn Property="c=>c.PublishDate" Sortable Title="发布时间" />
 
     <ActionColumn Title="操作">
     <Space>

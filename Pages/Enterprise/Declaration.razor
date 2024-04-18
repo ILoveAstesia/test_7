@@ -1,4 +1,4 @@
-@page "/declarationpage"
+@page "/Declarationpage"
 
 @using ehrms.Model
 @using System.ComponentModel
@@ -36,6 +36,12 @@
 
 编号：
 <Input @bind-Value=titem.Id />
+标题:
+<Input @bind-Value=titem.Title />
+内容
+<Input @bind-Value=titem.Description />
+状态
+<Input @bind-Value=titem.State />
 
 </Modal>
 
@@ -88,7 +94,10 @@
         RowKey="x=>x.Id"
       >
     <Selection Key="@(context.Id.ToString())" />
-    <PropertyColumn Property="c=>c.Id" Sortable Title="工号" />
+    <PropertyColumn Property="c=>c.Id" Sortable Title="编号" />
+    <PropertyColumn Property="c=>c.Title" Sortable Title="标题" />
+    <PropertyColumn Property="c=>c.Description" Sortable Title="内容" />
+    <PropertyColumn Property="c=>c.State" Sortable Title="状态" />
 
     <ActionColumn Title="操作">
     <Space>

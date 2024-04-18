@@ -150,8 +150,88 @@ public static class EhrmsSeedData
         //db.Persons.AddRange(admin,SuperAdmin);
         //db.Accountinfos.AddRange(accountinfoSuperAdmin,accountinfo0,accountinfo1,accountinfo2,accountinfo3);
         //db.Accountinfos.AddRange(accountinfoSuperAdmin,accountinfo0,accountinfo1);
-        db.Employees.AddRangeAsync(Emp0,Emp1,Emp2,Emp3,Emp4,Emp5);
+
+        var file = new Document{
+            Id=1,
+            Title="geometric-7719159.svg",
+            Path="geometric-7719159.svg",
+            PublishDate=new DateTime(2710, 12, 9, 14, 00, 00),
+        };
+
+        var dec0=new Declaration{
+            Id=1,
+            Title="有关添加和更新的bug",
+            Description="无法更新数据库数据。",
+            State=Opening,
+        };
+
+        var pay0=new Payroll{
+            Id=1,
+            MoneyShould=6000.0,
+            MoneyPaid=5400.0,
+            EmployeeId=1000,
+            PayDate=DateTime.Now,
+        };
+
+        var pay1=new Payroll{
+            Id=2,
+            MoneyShould=12000.0,
+            MoneyPaid=14000.0,
+            EmployeeId=1001,
+            PayDate=DateTime.Now,
+        };
+
+        var perf0=new Performance{
+            Id=1,
+            EmployeeId=1000,
+            Evaluation=@"
+            从服务器上的专用文件下载区域下载文件，最好是非系统驱动器。 使用专用位置便于对下载的文件实施安全限制。 禁用对文件下载区域的执行权限。
+客户端安全检查很容易被恶意用户规避。 在服务器上也要始终执行客户端安全检查。
+不要从用户或其他不受信任的源接收文件，然后在不对文件执行安全检查的情况下，让这些文件可立即下载。 有关详细信息，请参阅在 ASP.NET Core 中上传文件。
+            ",
+            Rating="好",
+        };
+
+        var rec0=new Recruitment{
+            Id=1,
+            Department=new(),
+            Demand="",
+            DemandNumber=2000,
+            State=Operating,
+        };
+
+        var rec1=new Recruitment{
+            Id=2,
+            Department=new(),
+            Demand="",
+            DemandNumber=3000,
+            State=Operating,
+        };
+
+        var rec2=new Recruitment{
+            Id=3,
+            Department=new(),
+            Demand="",
+            DemandNumber=4000,
+            State=Operatied,
+        };
+
+        var train0= new Training{
+            Id=1,
+            Name="关于编程职业技能的课程",
+            Description="",
+            StarTime=new DateTime(2110, 12, 9, 14, 00, 00),
+            EndTime=new DateTime(2710, 12, 9, 14, 00, 00),
+        };
+
         db.Departments.AddRangeAsync(dept0,dept1,dept2,dept3,dept4);
+        db.Documents.AddRangeAsync(file);
+        db.Declarations.AddRangeAsync(dec0);
+        db.Employees.AddRangeAsync(Emp0,Emp1,Emp2,Emp3,Emp4,Emp5);
+        db.Payrolls.AddRangeAsync(pay0);
+        db.Performances.AddRangeAsync(perf0);
+        db.Recruitments.AddRangeAsync(rec0,rec1,rec2);
+        db.Trainings.AddRangeAsync(train0);
         db.SaveChanges();
     }
 }
