@@ -133,6 +133,31 @@
 
 }
 
+@inject IJSRuntime JS
+
+<Button Type="primary" @onclick="DownloadFileFromURL">
+    下载文件
+</Button>
+
+<script>
+  window.triggerFileDownload = (fileName, url) => {
+    const anchorElement = document.createElement('a');
+    anchorElement.href = url;
+    anchorElement.download = fileName ?? '';
+    anchorElement.click();
+    //anchorElement.remove();
+  }
+</script>
+
+@code {
+    private async Task DownloadFileFromURL()
+    {
+        var fileName = "favicon.png";
+        var fileURL = "/favicon.png";//geometric-7719159.svg
+        await JS.InvokeVoidAsync("triggerFileDownload", fileName, fileURL);
+    }
+}
+
 
 @using System.Text.Json;
 @code{

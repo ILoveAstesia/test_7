@@ -4,50 +4,53 @@
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
-@using AntDesign
+
         @{
 
-            bool LoginState = false;
-
-            int currentId = 0;
-
-            string hrefString = "Login";
-            hrefString += "/" + currentId;
-            if (LoginState == false)
+            if (LoginState is false)
             {
-            <NavLink  href="/LoginPage" >
-                <Button Type="@ButtonType.Primary" class=" btn-success">登录</Button>
-            </NavLink>
+                <NavLink href="/LoginPage" class="oi ">
+                    <Button Type="@ButtonType.Primary" class=" btn-success oi oi-account-login ">登录</Button>
+                    <span class="oi oi-account-login"></span>
+                </NavLink>
+            }
+            else
+            {
+                <NavLink href="/LoginPage" class="oi ">
+
+                    <Button Type="@ButtonType.Primary" class=" btn-primary ">@name 登出</Button>
+                    <span class="oi oi-account-logout"></span>
+                </NavLink>
             }
         }
         @* <a href=@hrefString class=" btn-success">登录</a> *@
-            
+
 
     </div>
 </div>
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="oi oi-grid-two-up" aria-hidden="true"></span> 工作台
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
+        @* <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                <span class="oi oi-plus" aria-hidden="true"></span> 计数器
             </NavLink>
-        </div>
+        </div> *@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="EmployeePage">
-                <span class="oi oi-plus" aria-hidden="true"></span> 员工管理
+                <span class="oi oi-briefcase" aria-hidden="true"></span> 员工管理
             </NavLink>
         </div>
 
-               <div class="nav-item px-3">
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="Recruitmentpage">
                 <span class="oi oi-plus" aria-hidden="true"></span> 招聘管理
             </NavLink>
@@ -55,46 +58,46 @@
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="DepartmentPage">
-                <span class="oi oi-plus" aria-hidden="true"></span> 部门管理
+                <span class="oi oi-home" aria-hidden="true"></span> 部门管理
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Performancepage">
-                <span class="oi oi-plus" aria-hidden="true"></span> 绩效管理
+                <span class="oi oi-star" aria-hidden="true"></span> 绩效管理
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="payrollpage">
-                <span class="oi oi-plus" aria-hidden="true"></span> 薪资管理
+                <span class="oi oi-yen" aria-hidden="true"></span> 薪资管理
             </NavLink>
-        </div>   
+        </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="documentpage">
-                <span class="oi oi-plus" aria-hidden="true"></span> 文件管理
+                <span class="oi oi-document" aria-hidden="true"></span> 文件管理
             </NavLink>
         </div>
-                
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="trainingpage">
-                <span class="oi oi-plus" aria-hidden="true"></span> 培训管理
+                <span class="oi oi-pencil" aria-hidden="true"></span> 培训管理
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="declarationpage">
-                <span class="oi oi-plus" aria-hidden="true"></span> 申报管理
+                <span class="oi oi-comment-square" aria-hidden="true"></span> 申报管理
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
+        @* <div class="nav-item px-3">
             <NavLink class="nav-link" href="selfcheckpage">
-                <span class="oi oi-plus" aria-hidden="true"></span> 用户自查
+                <span class="oi " aria-hidden="true"></span> 用户自查
             </NavLink>
-        </div>
-<!-- #region old-->
+        </div> *@
+        <!-- #region old-->
 
         @* <div class="nav-item px-3">
         <NavLink class="nav-link" href="fetchdata">
@@ -103,45 +106,60 @@
         </div> *@
 
         @* <div class="nav-item px-3">
-            <NavLink class="nav-link" href="departmentPage">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> To Do Department
-            </NavLink>
+        <NavLink class="nav-link" href="departmentPage">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> To Do Department
+        </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Person">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> To Do Person
-            </NavLink>
+        <NavLink class="nav-link" href="Person">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> To Do Person
+        </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="SignLogPage">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> To Do SignLog
-            </NavLink>
+        <NavLink class="nav-link" href="SignLogPage">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> To Do SignLog
+        </NavLink>
         </div>
 
-        
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="AccountInfoPage">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> AccountInfoManagePage
-            </NavLink>
+        <NavLink class="nav-link" href="AccountInfoPage">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> AccountInfoManagePage
+        </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ClassPage">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> ClassInfoPage 
-            </NavLink>
+        <NavLink class="nav-link" href="ClassPage">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> ClassInfoPage
+        </NavLink>
         </div>
-        
+
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="CoursePage">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> CourseInfoPage 
-            </NavLink>
+        <NavLink class="nav-link" href="CoursePage">
+        <span class="oi oi-list-rich" aria-hidden="true"></span> CourseInfoPage
+        </NavLink>
         </div> *@
         <!-- #endregion old-->
 
     </nav>
 </div>
+@inject NavigationManager NavigationManager
+@using AntDesign
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@code{
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+            currentId =  await localStorage.GetItemAsync<int>("id");
+            name =  await localStorage.GetItemAsync<string>("name");
+            LoginState= await localStorage.GetItemAsync<bool>("login state");
+                StateHasChanged();
+            //Statushaschanged();
+    }
+    int currentId;
+    string? name;
+    bool LoginState = false;
+}
 
 @code {
     private bool collapseNavMenu = true;

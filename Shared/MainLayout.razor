@@ -2,38 +2,55 @@
 
 <PageTitle>企业人力资管理系统</PageTitle>
 
-<div class="page">
+<div class="page" >
     <div class="sidebar">
         <NavMenu />
     </div>
 
-    <main >
+    <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            @* <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a> *@
+            <Breadcrumb>
+                <BreadcrumbItem Href="">返回首页</BreadcrumbItem>
+                @* <BreadcrumbItem Href="">Application Center</BreadcrumbItem>
+                <BreadcrumbItem OnClick="@OnClickItem" Href="">Application List</BreadcrumbItem>
+                <BreadcrumbItem>An Application</BreadcrumbItem>
+                <BreadcrumbItem OnClick="@OnClickItem">A Page</BreadcrumbItem> *@
+            </Breadcrumb>
         </div>
-
-        <article class="content px-4" >
+        @inject IMessageService _message;
+        @code {
+            public void OnClickItem(MouseEventArgs args)
+            {
+                _message.Success($"You clicked the breadcrumb.");
+            }
+        }
+        <article class="content px-4">
             @* <PageHeader Class="site-page-header" Title="test" Subtitle="This is a subtitle" />
             <br /> *@
             @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
             @inject ProtectedSessionStorage ProtectedSessionStore;
             @inject NavigationManager NavigationManager
             @inject IHttpClientFactory httpClient;
-            @{
+            @* @{
+
                 string BaseUri = NavigationManager.BaseUri;
                 string Uri = NavigationManager.Uri;
-                string blacklist=httpClient.CreateClient("client_1").BaseAddress+"counter";
+                string blacklist = httpClient.CreateClient("client_1").BaseAddress + "counter";
                 //await ProtectedSessionStore.SetAsync("Right", 0);
                 var rightT = ProtectedSessionStore.GetAsync<int>("Right");
                 //int pageRight=
-            //; @Uri ;Right: @rightT  BlockUrl:@blacklist
+                //; @Uri ;Right: @rightT BlockUrl:@blacklist
             }
             <br />
-            @if(Uri==blacklist){
-                <h1>Sorry You Have No right to be here. </h1>
-            }else{
-                @Body
+            @if (Uri == blacklist)
+            {
+                <h1>警告 ⚠ 您没有权限访问这个界面 如需获得信息 请联系管理员</h1>
             }
+            else
+            {
+            } *@
+                @Body
         </article>
     </main>
 </div>

@@ -1,0 +1,197 @@
+@page "/LoginPage"
+@inject IMessageService _message
+@using System.ComponentModel.DataAnnotations;
+@using System.Text.Json;
+    @* <Flex Justify="center" Align="center">
+        <H1 style="color: #40a9ff;">登录</H1>
+    </Flex> *@
+
+@code{
+    string ImageUrl="favicon.png";//没用的背景设置
+    //
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+        if(firstRender){
+
+        }
+        LoginState= await localStorage.GetItemAsync<bool>("login state");
+    }
+    async Task logout(){
+        await localStorage.SetItemAsync("right",0);
+        await localStorage.SetItemAsync("name", "游客");
+        await localStorage.SetItemAsync("id",-1);
+        await localStorage.SetItemAsync("login state", false);
+        LoginState=false;
+        await _message.Success("登出成功  再见", 3);
+        NavigationManager.NavigateTo("");
+   }
+}
+<PageTitle  >人力资源管理系统登录窗口</PageTitle>
+
+<div style="background:#ECECEC; padding:30px ; background-image:@ImageUrl ;height=1720px;"   >
+<Flex Justify="center" Align="center" Style="">
+
+<Title Level="1" Type="primary" Style=";border-radius:6px;border:5px solid #FFFFFF ; Background:#FFFFFF;" >人力资源管理系统登录窗口</Title>
+
+</Flex>
+    <Flex Justify="center" Align="center" Style="Margin-top:30px ; Margin-bottom:100px">
+
+        @if(LoginState is true){
+            <Button OnClick="logout" >登出</Button>
+        }else{
+        <Card Style="width: 500px;border-radius:6px;border:5px solid #40a9ff">
+
+            <Form Loading="loading" Model="@model" LabelColSpan="8" WrapperColSpan="16" OnFinish="OnFinish"
+                OnFinishFailed="OnFinishFailed">
+                <Flex Justify="center" Align="center" Wrap="Wrap">
+                    <FormItem Label="用户名">
+                        <Input @bind-Value="@context.Username" />
+                    </FormItem>
+                    <br />
+                    <FormItem Label="密码">
+
+                        <InputPassword @bind-Value="@context.Password" />
+                    </FormItem>
+                </Flex>
+                <FormItem WrapperColOffset="8" WrapperColSpan="16">
+                    <Checkbox @bind-Value="context.RememberMe">记住我</Checkbox>
+                </FormItem>
+                <FormItem WrapperColOffset="8" WrapperColSpan="16">
+                    <Button Type="@ButtonType.Primary" OnClick="LogIn" HtmlType="submit">
+                        登录
+                    </Button>
+                    <Button Type="@ButtonType.Primary" OnClick="index">
+                        取消
+                    </Button>
+                </FormItem>
+            </Form>
+
+            @code {
+        void index()
+        {
+
+        }
+            }
+
+        </Card>
+
+        }
+
+    </Flex>
+
+</div>
+@code
+{
+
+    public class Model
+    {
+        [Required]
+        public string? Username { get; set; }
+        [Required]
+        public string? Password { get; set; }
+        public bool RememberMe { get; set; } = true;
+    }
+
+    private Model model = new Model();
+
+    private void OnFinish(EditContext editContext)
+    {
+        Console.WriteLine($"Success:{JsonSerializer.Serialize(model)}");
+    }
+
+    private void OnFinishFailed(EditContext editContext)
+    {
+        Console.WriteLine($"Failed:{JsonSerializer.Serialize(model)}");
+    }
+
+    bool loading = false;
+
+    void toggle(bool value) => loading = value;
+}
+
+
+
+@inject IHttpClientFactory client
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+@code {
+    Controller.DaoController? Dc;
+    //string idstrinput="";
+    bool LoginState=false;
+    async Task<ehrms.Model.Employee?> GetById(string idstr)
+    {
+        @* idstr=id.ToString(); *@
+        if (idstr is null || idstr == "")
+        {
+            return null;
+        }
+        Dc = new(client);
+        @* List<ehrms.Model.Employee>? tlist = []; *@
+        var result = await Dc.GetByIdAsync<ehrms.Model.Employee>("Employees", idstr);
+        if (result is null)
+        {
+            return null;
+        }
+        @* tlist.Add(result);
+EmployeeList=tlist; *@
+        StateHasChanged();
+        return result;
+
+
+    }
+
+    public async Task LogIn()
+    {
+
+        var inputpsw = model.Password;
+        if (inputpsw is null)
+        {
+            await _message.Error("登录失败密码为空", 5);
+            return;
+        }
+        var result = await GetById(model.Username!);
+        if (result is null || result.Password is null)
+        {
+            await _message.Error("登录失败无用户", 5);
+            return;
+        }
+        var psw = result.Password;
+        if (psw!.Equals(inputpsw))
+        {
+            //await OnClick();
+            
+            await localStorage.SetItemAsync("right", result.Level_right);
+            await localStorage.SetItemAsync("name", result.Name);
+            await localStorage.SetItemAsync("id", result.Id);
+            await localStorage.SetItemAsync("login state", true);
+            LoginState=true;
+            var name = await localStorage.GetItemAsync<string>("name");
+            await _message.Success("登录成功 "+name+" 欢迎使用", 3);
+            NavigationManager.NavigateTo("");
+            //SyncLocalStorageService.SetItem<String>("jwt", "jwt123");
+            return;
+        }
+
+        await _message.Error("登录失败", 5);
+
+        @* await Task.Delay(2000); *@
+
+    }
+
+
+    private async Task OnClick()
+    {
+        string key = $"updatable-{DateTime.Now.Ticks}";
+        var config = new MessageConfig()
+            {
+                Content = "Loading...",
+                Key = key
+            };
+        await _message.Loading(config);
+
+        await Task.Delay(2000);
+
+        config.Content = "Loaded";
+        config.Duration = 2;
+        await _message.Success(config);
+    }
+}

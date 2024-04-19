@@ -21,7 +21,8 @@ public class EmployeeDAO {
 
     [HttpGet("{id}")]
     public async Task<Employee?>? GetByIdAsync(int id){
-        var result = await _db.Employees.Where(p => p.Id == id).FirstOrDefaultAsync();
+        var result = await _db.Employees.Where(p => p.Id == id)
+        .FirstOrDefaultAsync();
         if (result is null){
             Employee empnull = new()
             {
@@ -30,6 +31,27 @@ public class EmployeeDAO {
             };
             return empnull;
         }
+        
+        return result;
+        
+    }
+
+    [HttpGet("All/{id}")]
+    public async Task<Employee?>? GetAllByIdAsync(int id){
+        var result = await _db.Employees.Where(p => p.Id == id)
+        .Include(p => p.Department)
+        // .Include(p => p.Declarations)
+        .Include(p => p.Payrolls)
+        .FirstOrDefaultAsync();
+        if (result is null){
+            Employee empnull = new()
+            {
+                Name = "未找到数据",
+                Gender="",
+            };
+            return empnull;
+        }
+        
         return result;
         
     }

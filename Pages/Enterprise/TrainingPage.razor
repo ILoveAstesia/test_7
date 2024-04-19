@@ -1,17 +1,14 @@
-@page "/EmployeePage";
+@page "/Trainingpage"
+
 
 @using ehrms.Model
 @using System.ComponentModel
 @using AntDesign.TableModels
-@* @using AntDesign *@
-       @*  *@
 
 <br />
 <p>目前是第 @_pageIndex 页 | 目前分页大小为: @_pageSize | 查询到 @_total 条数据 </p>
 
 <Input Placeholder="请输入ID" @bind-Value="@idstr"  Style="width: 20%;" />
-
-@* <Button OnClick="()=> { await GetById(); }">搜索</Button> *@
 <Button OnClick=GetById>搜索</Button>
 <Button OnClick=OnInitializedAsync Type="danger">刷新</Button>
 <Button OnClick="@ShowModal" Type="@ButtonType.Primary">添加</Button>
@@ -19,9 +16,6 @@
 <Button OnClick="()=> { _pageIndex++; }">下一页</Button>
 <br />
 
-@* <Button Type="primary" OnClick="@ShowModal">
-    Open Modal with customized footer
-</Button> *@
 @{
     RenderFragment footer = @<Template>
     <Button OnClick="@HandleOk" @key="@( "submit" )"
@@ -39,22 +33,18 @@
        OnCancel="@HandleCancel"
        Footer="@footer">
 
-编号：
-<Input @bind-Value=titem.Id />
-名称
-<Input @bind-Value=titem.Name />
-性别
-<Input @bind-Value=titem.Gender/>
-密码
-<Input @bind-Value=titem.Password />
-权限
-<Input @bind-Value=titem.Level_right />
+项目编号
+<Input @bind-Value=titem.Id />培训项目名
+<Input @bind-Value=titem.Name />培训项目描述
+<Input @bind-Value=titem.Description />培训项目描述
+<Input @bind-Value=titem.StarTime />培训开始时间
+<Input @bind-Value=titem.EndTime />培训结束时间
 
 </Modal>
 
 
 @code{
-    ehrms.Model.Employee titem = new();
+    ehrms.Model.Training titem = new();
     string title="添加";
     bool _visible = false;
     bool _loading = false;
@@ -67,24 +57,17 @@
     private void HandleOk(MouseEventArgs e)
     {
         _loading = true;
-        //await Task.Delay(3000);
-        @* if(EmployeeList is null)
-        {
-          EmployeeList=new();
-          HandleCancel(e);
-        return;} *@
 
-        var result = EmployeeList!.Where(p => p.Id == titem.Id).FirstOrDefault();
+        var result = TrainingList!.Where(p => p.Id == titem.Id).FirstOrDefault();
         if (result is not null){
           //return;
-        EmployeeList!.Remove(result);
+        TrainingList!.Remove(result);
         } 
        
         
         _visible = false;
-        @* EmployeeList.Remove(titem); *@
-        @* ehrms.Model.Employee copy =new ehrms.Model.Employee(titem) ; *@
-        EmployeeList!.Add(titem);
+
+        TrainingList!.Add(titem);
         titem = new();
         _loading = false;
     }
@@ -98,8 +81,8 @@
 
 
 <Table  @ref="table"
-        TItem="ehrms.Model.Employee"
-        DataSource="@EmployeeList"
+        TItem="ehrms.Model.Training"
+        DataSource="@TrainingList"
         @bind-PageIndex="_pageIndex"
         @bind-PageSize="_pageSize"
         @bind-SelectedRows="selectedRows"
@@ -108,14 +91,14 @@
         RowKey="x=>x.Id"
       >
     <Selection Key="@(context.Id.ToString())" />
-    <PropertyColumn Property="c=>c.Id" Sortable Title="工号" />
-    <PropertyColumn Property="c=>c.Name"  Sortable Title="姓名"/>
-    <PropertyColumn Property="c=>c.Level_right"  Sortable Title="等级"/>
-    <PropertyColumn Property="c=>c.Gender"  Sortable Title="性别"/>
+    <PropertyColumn Property="c=>c.Id" Sortable Title="培训项目编号" />
+    <PropertyColumn Property="c=>c.Name" Sortable Title="培训项目名" />
+    <PropertyColumn Property="c=>c.Description" Sortable Title="培训项目描述" />
+    <PropertyColumn Property="c=>c.StarTime" Sortable Title="培训开始时间" />
+    <PropertyColumn Property="c=>c.EndTime" Sortable Title="培训结束时间" />
+
     <ActionColumn Title="操作">
     <Space>
-      @* <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">Delete</Button></SpaceItem> *@
-      @* <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">删除</Button></SpaceItem> *@
       <SpaceItem><Button Danger OnClick="()=>Delete(context.Id)">删除</Button></SpaceItem>
       <SpaceItem><Button OnClick="()=>Update(context.Id)" >更改</Button></SpaceItem>
     </Space>
@@ -125,15 +108,14 @@
 
 @code{
   void Update(int id){
-    if(EmployeeList is null)
+    if(TrainingList is null)
     {return;}
-    var result = EmployeeList.Where(p => p.Id == id).FirstOrDefault();
+    var result = TrainingList.Where(p => p.Id == id).FirstOrDefault();
     if (result is null){
       return;
     }
     titem = result;
     ShowModal();
-    //EmployeeList.Remove(result);
   }
 }
 
@@ -147,7 +129,7 @@
 
   @foreach (var selected in selectedRows)
   {
-    <Tag @key="selected.Id" Closable OnClose="e=>RemoveSelection(selected.Id)" >@selected.Id - @selected.Name</Tag>
+    <Tag @key="selected.Id" Closable OnClose="e=>RemoveSelection(selected.Id)" >@selected.Id </Tag>
   }
 
 }
@@ -160,21 +142,21 @@
     selectedRows = selected;
   }
   void Delete(int id){
-    if(EmployeeList is null)
+    if(TrainingList is null)
     {return;}
-    var result = EmployeeList.Where(p => p.Id == id).FirstOrDefault();
+    var result = TrainingList.Where(p => p.Id == id).FirstOrDefault();
     if (result is null){
       return;
     }
-    EmployeeList.Remove(result);
+    TrainingList.Remove(result);
       //StateHasChanged();
   }
   int _pageIndex = 1;
   int _pageSize = 5;
   int _total = 0;
-  IEnumerable<ehrms.Model.Employee>? selectedRows;
+  IEnumerable<ehrms.Model.Training>? selectedRows;
   ITable? table;
-  public void OnChange(QueryModel<ehrms.Model.Employee> queryModel)
+  public void OnChange(QueryModel<ehrms.Model.Training> queryModel)
   {
     //调试用
     //Console.WriteLine(JsonSerializer.Serialize(queryModel));
@@ -186,33 +168,25 @@
 
 @code{
 
-    List<ehrms.Model.Employee>? EmployeeList;
+    List<ehrms.Model.Training>? TrainingList;
     Controller.DaoController? Dc;
-
 
   protected override async Task OnInitializedAsync()
   {
-    EmployeeList = await GetAll();
-    if(EmployeeList is null)
+    TrainingList = await GetAll();
+    if(TrainingList is null)
     {
     Console.WriteLine("list is null");
     }else{
-    _total = EmployeeList.Count();
+    _total = TrainingList.Count();
     }
   }
 
-    @* protected override async Task OnAfterRenderAsync(bool firstRender){
-        if(firstRender){
-            EmployeeList = await GetAll();
-            Console.WriteLine("first emp");
-        }
-        StateHasChanged();
-        //return base.OnAfterRenderAsync(firstRender);
-    } *@
 
-    async Task<List<ehrms.Model.Employee>?> GetAll(){
+
+    async Task<List<ehrms.Model.Training>?> GetAll(){
         Dc = new(client);
-        var result = await Dc.GetAllAsync<ehrms.Model.Employee>("Employees");
+        var result = await Dc.GetAllAsync<ehrms.Model.Training>("Trainings");
             //Thread.Sleep(3000);//测试异步加载
         return result;
         //return 
@@ -220,22 +194,21 @@
 
     string? idstr { get; set; }
 
-    async Task<List<ehrms.Model.Employee>?> GetById()
+    async Task<List<ehrms.Model.Training>?> GetById()
     { 
         if(idstr is null){
           return null;
         }
         Dc=new(client);
-        List<ehrms.Model.Employee>? tlist = [];
-        var result = await Dc.GetByIdAsync<ehrms.Model.Employee>("Employees",idstr); 
+        List<ehrms.Model.Training>? tlist = [];
+        var result = await Dc.GetByIdAsync<ehrms.Model.Training>("Trainings",idstr); 
         if(result is null){
           return null;
         }
         tlist.Add(result);
-        EmployeeList=tlist;
+        TrainingList=tlist;
         StateHasChanged(); 
         return tlist;
         
-
     }
 }

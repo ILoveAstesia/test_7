@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Blazored.LocalStorage;
 using ehrms.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -20,7 +23,17 @@ builder.Services.AddHttpClient("client_1",config=>  //这里指定的name=client
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
+// builder.Services.AddBlazoredLocalStorage(config =>
+// {
+//     config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+//     config.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+//     config.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+//     config.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+//     config.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+//     config.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+//     config.JsonSerializerOptions.WriteIndented = false;
+// });
+builder.Services.AddBlazoredLocalStorage();
 //AppState store
 //builder.Services.AddScoped<Accountinfo>();
 // IHttpClientFactory httpClientFactory;
@@ -50,7 +63,9 @@ builder.Services.AddSingleton<Accountinfo>();
 //     }
 //     opt.UseMySQL(cs);
 // });
-
+//忽略关系循环，可能导致json无法传输
+builder.Services.AddControllersWithViews()
+                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddDbContext<EhrmsContext>(opt =>
 {
     var cs=builder.Configuration.GetConnectionString("MySqlLapTopOverWrite");

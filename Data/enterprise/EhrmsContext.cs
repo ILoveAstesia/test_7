@@ -21,14 +21,36 @@ public class EhrmsContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // modelBuilder.Entity<Class>()
-        // .HasMany(e => e.Students)
-        // .WithMany(e => e.ClazzsStudedIn);
+        modelBuilder.Entity<Department>()
+        .HasMany(e => e.Employees)
+        .WithOne(e => e.Department)        
+        .HasForeignKey("deptId")
+        .IsRequired();
+
+        modelBuilder.Entity<Employee>()
+        .HasMany(e => e.Payrolls)
+        .WithOne(e => e.Employee)
+        .HasForeignKey("empId")
+        .IsRequired(false);
+
+        // modelBuilder.Entity<Employee>()
+        // .HasMany(e => e.Declarations)
+        // ;
+        // .WithOne(e => e.)
 
         // modelBuilder.Entity<Class>()
         // .HasMany(e => e.Teachers)
         // .WithMany(e => e.ClazzsNeedtoTeach);
+            // 设置主键
+        // modelBuilder.Entity<Department>().HasKey(s => s.Id);
+        // // 建立主从关系
+        // modelBuilder.Entity<Department>().OwnsMany(s => s.Employees);
 
+        // modelBuilder.Entity<Employee>().HasKey(s => s.Id);
+        // modelBuilder.Entity<Payroll>().HasKey(s => s.Id);
+        // modelBuilder.Entity<Payroll>().
+        // 建立主从关系
+        // modelBuilder.Entity<Employee>().OwnsMany(s => s.);
         base.OnModelCreating(modelBuilder);
 
     }

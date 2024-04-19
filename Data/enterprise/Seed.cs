@@ -17,7 +17,7 @@ public static class EhrmsSeedData
             ",
             DepartmentSize=15,
             ParentDepartmentID=1000,
-            ManagerID=1001,
+            ManagerID=1000,
             CreationDate=DateTime.Now,
             Employees=[],
         };
@@ -56,7 +56,7 @@ public static class EhrmsSeedData
             Id = 3000,
             Name = "研发",            
             Description= @"
-            研发。。。
+            研发部门将策划与销售的承诺兑现。
             ",
             DepartmentSize=50,
             ParentDepartmentID=1000,
@@ -88,6 +88,7 @@ public static class EhrmsSeedData
             Level_right=3,
             Department=dept0,
             Declarations=[],
+            Payrolls=[],
         };
 //1 normal, 2 manager, 3 admin
         var Emp1 = new Employee(){
@@ -98,6 +99,7 @@ public static class EhrmsSeedData
             Level_right=2,
             Department=dept1,
             Declarations=[],
+            Payrolls=[],
         };
         var Emp2 = new Employee(){
             Id = 2001,
@@ -141,7 +143,10 @@ public static class EhrmsSeedData
         dept1.Employees.Add(Emp1);
         dept2.Employees.Add(Emp2);
         dept3.Employees.Add(Emp3);
+        dept4.Employees.Add(Emp4);
+        dept4.Employees.Add(Emp5);
 
+        
 
         var rng = new Random();
 
@@ -165,6 +170,8 @@ public static class EhrmsSeedData
             State=Opening,
         };
 
+        Emp0.Declarations.Add(dec0);
+
         var pay0=new Payroll{
             Id=1,
             MoneyShould=6000.0,
@@ -181,13 +188,14 @@ public static class EhrmsSeedData
             PayDate=DateTime.Now,
         };
 
+        Emp0.Payrolls.Add(pay0);
+        Emp1.Payrolls.Add(pay1);
+
         var perf0=new Performance{
             Id=1,
             EmployeeId=1000,
             Evaluation=@"
-            从服务器上的专用文件下载区域下载文件，最好是非系统驱动器。 使用专用位置便于对下载的文件实施安全限制。 禁用对文件下载区域的执行权限。
-客户端安全检查很容易被恶意用户规避。 在服务器上也要始终执行客户端安全检查。
-不要从用户或其他不受信任的源接收文件，然后在不对文件执行安全检查的情况下，让这些文件可立即下载。 有关详细信息，请参阅在 ASP.NET Core 中上传文件。
+            绩效考核（performance examine），是企业绩效管理中的一个环节，是指考核主体对照工作目标和绩效标准，采用科学的考核方式，评定员工的工作任务完成情况、员工的工作职责履行程度和员工的发展情况，并且将评定结果反馈给员工的过程。常见绩效考核方法包括BSC、KPI及360度考核等。绩效考核是一项系统工程。绩效考核是绩效管理过程中的一种手段。
             ",
             Rating="好",
         };
@@ -195,26 +203,30 @@ public static class EhrmsSeedData
         var rec0=new Recruitment{
             Id=1,
             Department=new(),
-            Demand="",
-            DemandNumber=2000,
+            Demand="喜欢写故事",
+            DemandNumber=7000,
             State=Operating,
         };
 
         var rec1=new Recruitment{
             Id=2,
             Department=new(),
-            Demand="",
-            DemandNumber=3000,
+            Demand="技术能力强",
+            DemandNumber=8000,
             State=Operating,
         };
 
         var rec2=new Recruitment{
             Id=3,
             Department=new(),
-            Demand="",
-            DemandNumber=4000,
+            Demand="急需用钱",
+            DemandNumber=5000,
             State=Operatied,
         };
+
+        rec0.Department=dept2;
+        rec1.Department=dept3;
+        rec2.Department=dept4;
 
         var train0= new Training{
             Id=1,

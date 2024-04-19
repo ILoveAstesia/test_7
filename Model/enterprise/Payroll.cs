@@ -7,6 +7,7 @@ public class Payroll{
     //[money]
     public double MoneyPaid{ get; set;}
     public int EmployeeId{ get; set;}
+    public Employee? Employee{ get; set;}
     public DateTime PayDate{get; set;}
 
 }

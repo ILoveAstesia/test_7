@@ -14,6 +14,8 @@ public class Employee
     public int Level_right { get; set; } = 0;
     public Department? Department { set; get; } 
     public List<Declaration>? Declarations { set; get; } 
+    public List<Payroll>? Payrolls { set; get; } 
+    // public List<Performance>? Performances { set; get; } 
 
 }
 
