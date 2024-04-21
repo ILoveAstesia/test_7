@@ -20,8 +20,10 @@ public class DepartmentDAO {
     }
 
     [HttpGet("{id}")]
-    public async Task<Department?> GetByIdAsync(int id){
-        return await _db.Departments.Where(p => p.Id == id).FirstOrDefaultAsync();
+    public async Task<ActionResult<Department?>> GetByIdAsync(int id){
+        
+        var re = await _db.Departments.Where(p => p.Id == id).FirstOrDefaultAsync();
+        return re;
         
     }
 

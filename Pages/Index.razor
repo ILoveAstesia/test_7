@@ -27,9 +27,9 @@
         LoginState = await localStorage.GetItemAsync<bool>("login state");
             if  (ID != 0){
                 await GetInfo();
+                StateHasChanged();
             }
         }
-            StateHasChanged();
     }
     int ID=0;
     bool LoginState=false;
@@ -150,7 +150,7 @@
         @* tlist.Add(result);
 EmployeeList=tlist; *@
 
-        StateHasChanged();
+        //StateHasChanged();
         return;
 
 

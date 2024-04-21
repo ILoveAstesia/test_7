@@ -60,7 +60,7 @@
     {
         _loading = true;
 
-        var result = DepartmentList!.Where(p => p.Id == titem.Id).FirstOrDefault();
+        var result = DepartmentList.Where<ehrms.Model.Department?>(p => p.Id == titem.Id).FirstOrDefault();
         if (result is not null){
           //return;
         DepartmentList!.Remove(result);
@@ -171,7 +171,7 @@
 
 @code{
 
-    List<ehrms.Model.Department>? DepartmentList;
+    List<ehrms.Model.Department?>? DepartmentList;
     Controller.DaoController? Dc;
 
   protected override async Task OnInitializedAsync()
@@ -197,14 +197,14 @@
 
     string? idstr { get; set; }
 
-    async Task<List<ehrms.Model.Department>?> GetById()
+    async Task<List<ehrms.Model.Department?>?> GetById()
     { 
         if(idstr is null){
           return null;
         }
         Dc=new(client);
-        List<ehrms.Model.Department>? tlist = [];
-        var result = await Dc.GetByIdAsync<ehrms.Model.Department>("Departments",idstr); 
+        List<ehrms.Model.Department?>? tlist = [];
+        var result = await Dc.GetByIdAsync<ehrms.Model.Department?>("Departments",idstr); 
         if(result is null){
           return null;
         }

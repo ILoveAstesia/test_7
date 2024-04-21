@@ -22,7 +22,7 @@
         await localStorage.SetItemAsync("login state", false);
         LoginState=false;
         await _message.Success("登出成功  再见", 3);
-        NavigationManager.NavigateTo("");
+        NavigationManager.NavigateTo("",true);
    }
 }
 <PageTitle  >人力资源管理系统登录窗口</PageTitle>
@@ -166,7 +166,7 @@ EmployeeList=tlist; *@
             LoginState=true;
             var name = await localStorage.GetItemAsync<string>("name");
             await _message.Success("登录成功 "+name+" 欢迎使用", 3);
-            NavigationManager.NavigateTo("");
+            NavigationManager.NavigateTo("",true);
             //SyncLocalStorageService.SetItem<String>("jwt", "jwt123");
             return;
         }

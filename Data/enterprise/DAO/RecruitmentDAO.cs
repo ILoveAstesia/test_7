@@ -21,7 +21,8 @@ public class RecruitmentDAO {
 
     [HttpGet("{id}")]
     public async Task<Recruitment?> GetByIdAsync(int id){
-        return await _db.Recruitments.Where(p => p.Id == id).FirstOrDefaultAsync();
+        var result = await _db.Recruitments.Where(p => p.Id == id).FirstOrDefaultAsync();
+        return result;
         
     }
 

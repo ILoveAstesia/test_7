@@ -150,10 +150,13 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @code{
     protected override async Task OnAfterRenderAsync(bool firstRender){
+        if (firstRender){
             currentId =  await localStorage.GetItemAsync<int>("id");
             name =  await localStorage.GetItemAsync<string>("name");
             LoginState= await localStorage.GetItemAsync<bool>("login state");
+
                 StateHasChanged();
+        }
             //Statushaschanged();
     }
     int currentId;

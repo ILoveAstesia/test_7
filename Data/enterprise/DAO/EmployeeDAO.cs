@@ -16,7 +16,8 @@ public class EmployeeDAO {
 
     [HttpGet]
     public async Task<List<Employee>> GetAllAsync(){
-        return await _db.Employees.ToListAsync();
+        var a =await _db.Employees.ToListAsync();
+        return a;
     }
 
     [HttpGet("{id}")]

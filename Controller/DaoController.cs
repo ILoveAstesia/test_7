@@ -50,13 +50,13 @@ public class DaoController
 
     }
 
-    public async Task<T?> GetByIdAsync<T>(String page,string id) where T : class
+    public async Task<T?> GetByIdAsync<T>(String page,string id) where T : class?
     {
 
         //var a =typeof(T);
         Console.WriteLine(apiurl + "DAOs/" + page+"/"+id);
         //T.toString();
-        var result = await Client.GetFromJsonAsync<T>(apiurl + "DAOs/" + page+"/"+id);
+        var result = await Client.GetFromJsonAsync<T?>(apiurl + "DAOs/" + page+"/"+id);
         if (result is null){
             Console.WriteLine("------NULL CONTENT------");
             return null;
