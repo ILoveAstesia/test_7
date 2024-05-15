@@ -205,7 +205,11 @@
         Dc=new(client);
         List<ehrms.Model.Department?>? tlist = [];
         var result = await Dc.GetByIdAsync<ehrms.Model.Department?>("Departments",idstr); 
+        
         if(result is null){
+          tlist=[];
+          DepartmentList=tlist;
+          StateHasChanged(); 
           return null;
         }
         tlist.Add(result);
