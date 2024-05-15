@@ -68,7 +68,7 @@ builder.Services.AddControllersWithViews()
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddDbContext<EhrmsContext>(opt =>
 {
-    var cs=builder.Configuration.GetConnectionString("MySqlLapTopOverWrite");
+    var cs=builder.Configuration.GetConnectionString("MySqlDeskTop");
     if(cs==null){
         Console.WriteLine("conectionString is null");
         Environment.Exit(0);
